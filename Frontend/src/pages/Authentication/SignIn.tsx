@@ -40,7 +40,7 @@ const SignIn: React.FC = () => {
       .then((result) => {
         if (
           result.status === 200 &&
-          result.data.message == 'Login Succesfull'
+          result.data.message == 'login berhasil'
         ) {
           alertTopEnd.fire({
             icon: 'success',
