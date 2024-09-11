@@ -3,7 +3,6 @@ import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartThree from '../../components/Charts/ChartThree';
 import ChartTwo from '../../components/Charts/ChartTwo';
-import MapOne from '../../components/Maps/MapOne';
 import DefaultLayout from '../../layout/DefaultLayout';
 
 const Dashboard: React.FC = () => {
@@ -100,7 +99,7 @@ const Dashboard: React.FC = () => {
         <ChartOne />
         <ChartTwo />
         <ChartThree />
-        <MapOne />
+        
         <div className="col-span-12 xl:col-span-8">
           
         </div>

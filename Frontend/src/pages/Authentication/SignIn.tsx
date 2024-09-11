@@ -38,15 +38,18 @@ const SignIn: React.FC = () => {
     axios
       .post('http://localhost:5000/login', { username, password })
       .then((result) => {
-        if (
-          result.status === 200 &&
-          result.data.message == 'login berhasil'
-        ) {
+        if (result.data.message == 'login user') {
           alertTopEnd.fire({
             icon: 'success',
             title: 'Login berhasil',
           });
           navigate('/home');
+        } else if (result.data.message == 'login admin') {
+          alertTopEnd.fire({
+            icon: 'success',
+            title: 'Login berhasil',
+          });
+          navigate('https://youtube.com');
         } else if (result.data.message == 'no username') {
           loginFailed('Username tidak terdaftar');
         } else if (result.data.message == 'password salah') {

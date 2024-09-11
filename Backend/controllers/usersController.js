@@ -5,7 +5,11 @@ const login = (req, res) => {
 	usersModel.findOne({ username: username }).then((user) => {
 		if (user) {
 			if (user.password === password) {
-				res.json({ message: "login berhasil" });
+				if (user.role === "admin") {
+					res.json({ message: "login admin" });
+				} else if (user.role === "user") {
+					res.json({ message: "login user" });
+				}
 			} else {
 				res.json({ message: "password salah" });
 			}
