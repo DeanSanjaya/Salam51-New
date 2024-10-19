@@ -1,42 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const SelectGroupOne: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string>('');
-  const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
+const SelectGroupOne: React.FC = ({ satuanWaktu, setSatuanWaktu }) => {
+  const [selectedOption, setSelectedOption] = useState<string>(satuanWaktu);
 
-  const changeTextColor = () => {
-    setIsOptionSelected(true);
-  };
+  useEffect(() => {
+    setSelectedOption(satuanWaktu);
+  }, [satuanWaktu]);
 
   return (
     <div className="mb-4.5">
-      <label className="mb-2.5 block text-black dark:text-white">
+      <label
+        className="mb-2.5 block text-black dark:text-white"
+        htmlFor="satuan-waktu"
+      >
         {' '}
-        Subject{' '}
+        Satuan Waktu{' '}
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
         <select
+          id="satuan-waktu"
           value={selectedOption}
           onChange={(e) => {
-            setSelectedOption(e.target.value);
-            changeTextColor();
+            const value = e.target.value;
+            setSelectedOption(value);
+            setSatuanWaktu(value);
+            
           }}
-          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-            isOptionSelected ? 'text-black dark:text-white' : ''
-          }`}
+          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Select your subject
+            Pilih satuan waktu
           </option>
-          <option value="USA" className="text-body dark:text-bodydark">
-            USA
+          <option value="Jam" className="text-body dark:text-bodydark">
+            Jam
           </option>
-          <option value="UK" className="text-body dark:text-bodydark">
-            UK
+          <option value="Hari" className="text-body dark:text-bodydark">
+            Hari
           </option>
-          <option value="Canada" className="text-body dark:text-bodydark">
-            Canada
+          <option value="Bulan" className="text-body dark:text-bodydark">
+            Bulan
           </option>
         </select>
 

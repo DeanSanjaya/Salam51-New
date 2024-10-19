@@ -65,7 +65,7 @@ const options: ApexOptions = {
     },
   },
   dataLabels: {
-    enabled: false,
+    enabled: true,
   },
   markers: {
     size: 4,

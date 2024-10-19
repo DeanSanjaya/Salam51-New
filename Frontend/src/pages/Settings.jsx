@@ -3,37 +3,54 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../layout/DefaultLayout';
 import axios from 'axios';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 
 const Settings = () => {
   const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
+
+  const sweetAlert = (message, icon) => {
+    Swal.fire({
+      title: message,
+      icon: icon,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Tutup',
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validasi input
     if (newPassword !== confirmPassword) {
-      setMessage('Password baru dan konfirmasi tidak cocok');
+      sweetAlert('Password baru tidak sama', 'error');
       return;
     }
-
+    const key = sessionStorage.getItem('key');
     try {
-      const token = localStorage.getItem('token'); // Ambil token dari localStorage
       const response = await axios.post(
         'http://localhost:5000/change-password',
-        { oldPassword, newPassword },
-        { headers: { 'x-auth-token': token } },
+        {
+          key,
+          oldPassword,
+          newPassword,
+        },
       );
-      setMessage(response.data.msg);
-      // Redirect atau reset form setelah berhasil
-      navigate('/home');
-    } catch (err) {
-      setMessage(err.response?.data?.msg || 'Terjadi kesalahan');
+      if (response.data.message == 'passwordnya sama') {
+        sweetAlert('Password baru dan lama anda sama', 'error');
+      } else if (response.data.message == 'password salah') {
+        sweetAlert('Password anda salah', 'error');
+      } else if (response.data.message == 'berhasil ganti') {
+        sweetAlert('Password anda berhasil diganti', 'success');
+      } else {
+        alert('Failed to change password: ' + response.data.message);
+      }
+    } catch (error) {
+      alert('Error: ' + (error.response?.data?.message || error.message));
     }
   };
+
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-180">
@@ -76,9 +93,9 @@ const Settings = () => {
                   </span>
                   <input
                     className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    type="password"
                     name="password-lama"
                     id="password-lama"
+                    type="password"
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
                     required
@@ -116,9 +133,9 @@ const Settings = () => {
                   </span>
                   <input
                     className="w-full rounded border border-stroke bg-gray py-3 px-4.5 pl-11.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    type="password"
                     name="password-baru"
                     id="password-baru"
+                    type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
@@ -156,9 +173,9 @@ const Settings = () => {
                   </span>
                   <input
                     className="w-full rounded border border-stroke bg-gray py-3 px-4.5 pl-11.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    type="password"
                     name="konfirmasi"
                     id="konfirmasi"
+                    type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -170,7 +187,7 @@ const Settings = () => {
                 <button
                   onClick={() => navigate('/home')}
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
+                  type="button"
                 >
                   Batal
                 </button>
@@ -182,7 +199,6 @@ const Settings = () => {
                 </button>
               </div>
             </form>
-            {message && <p className="text-red-500">{message}</p>}
           </div>
         </div>
       </div>

@@ -17,14 +17,12 @@ const EditBarang = () => {
   const [nama, setNama] = useState('');
   const [jumlah, setJumlah] = useState<number>(0);
   const [tanggal, setTanggal] = useState<Date | null>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/items/${id}`,
-        );
+        const response = await axios.get(`http:/localhost:5000/items/${id}`);
         setNama(response.data[0].nama);
         setJumlah(response.data[0].jumlah);
         setTanggal(
@@ -53,7 +51,7 @@ const EditBarang = () => {
       console.error('Error updating data:', error);
       // Handle error updating data, redirect or show error message
     }
-    navigate('/barang/list-barang')
+    navigate('/barang/list-barang');
   };
 
   return (

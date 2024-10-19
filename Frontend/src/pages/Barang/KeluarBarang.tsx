@@ -4,28 +4,34 @@ import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import DefaultLayout from '../../layout/DefaultLayout';
 import axios from 'axios';
 
-const InputBarang = () => {
+const KeluarBarang = () => {
   const [nama, setNama] = useState();
   const [jumlah, setJumlah] = useState();
-  const [tanggal, setTanggal]  = useState(null)
+  const [tanggal, setTanggal] = useState(null);
 
-  const formattedDate = tanggal ? new Date(tanggal).toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  }) : null;
+  const formattedDate = tanggal
+    ? new Date(tanggal).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:5000/items', { nama, jumlah, tanggal : formattedDate })
+      .post('http://localhost:5000/items', {
+        nama,
+        jumlah,
+        tanggal: formattedDate,
+      })
       .then((result) => console.log(result))
       .catch((err) => console.log(err));
   };
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Input Barang" />
+      <Breadcrumb pageName="Keluar Barang" />
       <div className="flex flex-col gap-9">
         {/* <!-- Contact Form --> */}
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -47,7 +53,6 @@ const InputBarang = () => {
                   onChange={(e) => setNama(e.target.value)}
                 />
               </div>
-
               <div className="mb-4.5">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Jumlah barang
@@ -62,7 +67,6 @@ const InputBarang = () => {
               <div className="mb-4.5">
                 <DatePicker tanggal={tanggal} setTanggal={setTanggal} />
               </div>
-
               <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
                 Konfirmasi
               </button>
@@ -74,4 +78,4 @@ const InputBarang = () => {
   );
 };
 
-export default InputBarang;
+export default KeluarBarang;
