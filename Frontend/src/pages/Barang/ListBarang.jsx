@@ -4,15 +4,8 @@ import Tabel from '../../components/Tables';
 import DefaultLayout from '../../layout/DefaultLayout';
 import axios from 'axios';
 
-interface Items {
-  _id: String;
-  nama: String;
-  jumlah: number;
-  tanggal: String;
-}
-
 const ListBarang = () => {
-  const [items, setItems] = useState<Items[]>([]);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     axios

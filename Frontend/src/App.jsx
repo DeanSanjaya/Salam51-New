@@ -13,9 +13,11 @@ import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import EditBarang from './pages/Barang/EditBarang';
 import KeluarBarang from './pages/Barang/KeluarBarang';
+import TambahBarang from './pages/Barang/Tambah Barang';
+import DetailBarang from './pages/Barang/DetailBarang';
 
 function App() {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -35,6 +37,8 @@ function App() {
         <Route path="/home" element={<Dashboard />} />
         <Route path="/barang/list-barang" element={<ListBarang />} />
         <Route path="/barang/input-barang" element={<InputBarang />} />
+        <Route path="/barang/tambah-barang/:id" element={<TambahBarang />} />
+        <Route path="/barang/detail-barang/:id" element={<DetailBarang />} />
         <Route path="/barang/keluar-barang" element={<KeluarBarang />} />
         <Route path="/barang/edit-barang/:id" element={<EditBarang />} />
         <Route path="/forms/form-elements" element={<FormElements />} />

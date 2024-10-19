@@ -3,14 +3,12 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const itemsRoutes = require("./routes/itemsRoutes");
 const usersRoutes = require("./routes/usersRoutes");
-const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const { MONGO_URL, PORT } = process.env;
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 
 // Koneksi ke MongoDB
 mongoose
