@@ -16,6 +16,7 @@ const InputBarang = () => {
   const [rerata, setRerata] = useState('');
   const [safetyStock, setSafetyStock] = useState('');
   const [tempat, setTempat] = useState('');
+  const user = sessionStorage.getItem('username');
 
   const sweetAlert = (title, icon) => {
     Swal.fire({
@@ -26,7 +27,7 @@ const InputBarang = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       nama &&
@@ -39,7 +40,7 @@ const InputBarang = () => {
       satuanWaktu &&
       tempat
     ) {
-      axios
+      await axios
         .post('http://localhost:5000/items', {
           nama,
           detail: [
@@ -58,6 +59,15 @@ const InputBarang = () => {
           ROP:
             parseInt(leadTime, 10) * parseFloat(rerata) +
             parseInt(safetyStock, 10),
+        })
+        .catch((err) => console.log(err));
+      await axios
+        .post('http://localhost:5000/transaksi/tambah', {
+          namaBarang: nama,
+          jenisTransaksi: 'Penambahan Barang',
+          jumlah,
+          tanggalTransaksi: tanggal,
+          username: user,
         })
         .catch((err) => console.log(err));
       handleReset();

@@ -9,6 +9,8 @@ import axios from 'axios';
 const DashboardUser = () => {
   const [itemCount, setItemCount] = useState(0);
   const [totalItem, setTotalItem] = useState(0);
+  const [transaksiCount, setTransaksiCount] = useState(0);
+  console.log(transaksiCount);
 
   useEffect(() => {
     const fetchItemCount = async () => {
@@ -28,6 +30,19 @@ const DashboardUser = () => {
       try {
         const response = await axios.get('http://localhost:5000/items/total');
         setTotalItem(response.data.totalItems);
+      } catch (error) {
+        console.error('Error fetching item count:', error);
+      }
+    };
+
+    fetchItemCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchItemCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/transaksi/');
+        setTransaksiCount(response.data.count);
       } catch (error) {
         console.error('Error fetching item count:', error);
       }
@@ -58,7 +73,7 @@ const DashboardUser = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Barang" total={`${totalItem}`}>
+        <CardDataStats title="Total Semua Jumlah Barang" total={`${totalItem}`}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -77,7 +92,7 @@ const DashboardUser = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
+        <CardDataStats title="Total Transaksi" total={`${transaksiCount}`}>
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -125,13 +140,13 @@ const DashboardUser = () => {
         </CardDataStats> */}
       </div>
 
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+      {/* <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
         <ChartTwo />
         <ChartThree />
 
-        <div className="col-span-12 xl:col-span-8"></div>
-      </div>
+        <div className="col-span-12 xl:col-span-8">dadas</div>
+      </div> */}
     </DefaultLayout>
   );
 };

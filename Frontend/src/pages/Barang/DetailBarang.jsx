@@ -19,25 +19,20 @@ const DetailBarang = () => {
       .catch((err) => console.log(err));
   }, [id]);
 
-  const sweetConfirmationAlert = async () => {
-    const result = await Swal.fire({
-      title: 'Apakah anda yakin?',
-      text: 'Data dari barang ini hanya tersisa 1',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Iya',
-    });
-    return result.isConfirmed;
-  };
+  // const sweetConfirmationAlert = async () => {
+  //   const result = await Swal.fire({
+  //     title: 'Apakah anda yakin?',
+  //     text: 'Data dari barang ini hanya tersisa 1',
+  //     icon: 'question',
+  //     showCancelButton: true,
+  //     confirmButtonColor: '#3085d6',
+  //     cancelButtonColor: '#d33',
+  //     confirmButtonText: 'Iya',
+  //   });
+  //   return result.isConfirmed;
+  // };
 
   const handleDelete = async (detailId) => {
-    // if (item.detail.length === 1) {
-    //   const isConfirmed = await sweetConfirmationAlert(detailId);
-    //   if (!isConfirmed) return;
-    // }
-
     try {
       await axios.delete(
         `http://localhost:5000/items/${id}/detail/${detailId}`,

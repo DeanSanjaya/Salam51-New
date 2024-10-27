@@ -46,11 +46,13 @@ const getItemById = (req, res) => {
 		.catch((err) => res.json(err));
 };
 
-const createItem = (req, res) => {
-	itemsModel
-		.create(req.body)
-		.then((item) => res.status(201).json(item))
-		.catch((err) => res.status(400).json(err));
+const createItem = async (req, res) => {
+	try {
+		const item = await itemsModel.create(req.body);
+		res.status(201).json(item);
+	} catch (err) {
+		res.status(400).json(err);
+	}
 };
 
 const outItem = async (req, res) => {

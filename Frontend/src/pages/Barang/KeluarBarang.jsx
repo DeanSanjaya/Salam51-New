@@ -14,6 +14,8 @@ const KeluarBarang = () => {
   const [totalStok, setTotalStok] = useState('');
   const [detailPengambilan, setDetailPengambilan] = useState([]);
   const navigate = useNavigate();
+  const today = new Date();
+  const username = sessionStorage.getItem('username');
 
   const sweetAlert = (title, icon) => {
     Swal.fire({
@@ -68,7 +70,6 @@ const KeluarBarang = () => {
           jumlahKeluar,
         },
       );
-
       // Cek status respons
       if (response.status === 200) {
         const detailPengambilanBaru = response.data.detailYangDigunakan;
@@ -97,6 +98,13 @@ const KeluarBarang = () => {
         });
         setItems(updatedItems); // Update state dengan item yang diperbarui
       }
+      await axios.post('http://localhost:5000/transaksi/tambah', {
+        namaBarang: selectedOption,
+        jenisTransaksi: 'Pengeluaran Barang',
+        jumlah,
+        tanggalTransaksi: today,
+        username,
+      });
     } catch (error) {
       console.error('Error updating database:', error);
       alert('Terjadi kesalahan saat memperbarui database.');

@@ -12,6 +12,7 @@ const TambahBarang = () => {
   const [jumlah, setJumlah] = useState('');
   const [tanggal, setTanggal] = useState('');
   const [tempat, setTempat] = useState('');
+  const username = sessionStorage.getItem('username');
   const navigate = useNavigate();
 
   const sweetAlert = (title, icon) => {
@@ -47,14 +48,18 @@ const TambahBarang = () => {
     e.preventDefault();
     if (jumlah && tanggal && tempat) {
       try {
-        const result = await axios.post(
-          `http://localhost:5000/items/${id}/detail/`,
-          {
-            jumlah: parseInt(jumlah),
-            tanggal: new Date(tanggal),
-            tempat,
-          },
-        );
+        await axios.post(`http://localhost:5000/items/${id}/detail/`, {
+          jumlah,
+          tanggal,
+          tempat,
+        });
+        await axios.post('http://localhost:5000/transaksi/tambah', {
+          namaBarang: nama,
+          jenisTransaksi: 'Penambahan Barang',
+          jumlah,
+          tanggalTransaksi: new Date(tanggal),
+          username,
+        });
         sweetAlert('Barang berhasil ditambahkan', 'success');
       } catch (err) {
         sweetAlert('Terjadi kesalahan, silakan coba lagi', 'error');

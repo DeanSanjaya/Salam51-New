@@ -4,6 +4,8 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
 const Tabel = ({ items, setItems }) => {
+  const username = sessionStorage.getItem('username');
+  const today = new Date();
   const navigate = useNavigate();
 
   const swalAlert = (title, icon) => {
@@ -32,13 +34,20 @@ const Tabel = ({ items, setItems }) => {
       });
       return result.isConfirmed;
     };
-
     try {
       const confirmed = await sweetConfirmationAlert();
       if (confirmed) {
+        const itemToDelete = items.find((item) => item._id === _id);
         await axios.delete(`http://localhost:5000/items/${_id}`);
         setItems((prevItems) => prevItems.filter((item) => item._id !== _id));
         swalAlert('Item berhasil dihapus', 'success');
+        await axios.post('http://localhost:5000/transaksi/tambah', {
+          namaBarang: itemToDelete.nama,
+          jenisTransaksi: 'Penghapusan Barang',
+          jumlah: itemToDelete.totalJumlah,
+          tanggalTransaksi: today,
+          username,
+        });
       }
     } catch (error) {
       console.error('Error deleting item:', error);
