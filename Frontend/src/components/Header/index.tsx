@@ -1,5 +1,4 @@
 import DropdownUser from './DropdownUser';
-
 import DarkModeSwitcher from './DarkModeSwitcher';
 
 const Header = (props: {
@@ -54,7 +53,7 @@ const Header = (props: {
           {/* <!-- Hamburger Toggle BTN --> */}
         </div>
         <div className="w-full bg-transparent pl-9 pr-4 text-black focus:outline-none dark:text-white xl:w-125">
-          {`Welcome ${''}`}
+          {/* {`Welcome ${''}`} */}
         </div>
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">

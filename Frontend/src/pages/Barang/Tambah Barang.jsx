@@ -11,6 +11,7 @@ const TambahBarang = () => {
   const [nama, setNama] = useState('');
   const [jumlah, setJumlah] = useState('');
   const [tanggal, setTanggal] = useState('');
+  const [tempat, setTempat] = useState('');
   const navigate = useNavigate();
 
   const sweetAlert = (title, icon) => {
@@ -35,7 +36,6 @@ const TambahBarang = () => {
         const response = await axios.get(`http://localhost:5000/items/${id}`);
         const item = response.data;
         setNama(item.nama);
-        setJumlah(item.detail.jumlah);
       } catch (error) {
         console.log(error);
       }
@@ -45,19 +45,18 @@ const TambahBarang = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (jumlah && tanggal) {
+    if (jumlah && tanggal && tempat) {
       try {
-        const result = await axios.put(
-          `http://localhost:5000/items/${id}/detail`,
+        const result = await axios.post(
+          `http://localhost:5000/items/${id}/detail/`,
           {
             jumlah: parseInt(jumlah),
             tanggal: new Date(tanggal),
+            tempat,
           },
         );
         sweetAlert('Barang berhasil ditambahkan', 'success');
-        console.log('Response dari server:', result); // Debug log
       } catch (err) {
-        console.error('Error:', err); // Debug log
         sweetAlert('Terjadi kesalahan, silakan coba lagi', 'error');
       }
     } else {
@@ -108,7 +107,7 @@ const TambahBarang = () => {
                     placeholder="Masukkan jumlah barang"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-not-allowed disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     onChange={(e) => setJumlah(e.target.value)}
-                    value={jumlah}
+                    // value={jumlah}
                   />
                 </div>
                 {/* <div className="mb-4.5">
@@ -149,6 +148,23 @@ const TambahBarang = () => {
               <div>
                 <div className="mb-4.5">
                   <DatePicker tanggal={tanggal} setTanggal={setTanggal} />
+                </div>
+                <div className="mb-4.5">
+                  <label
+                    className="mb-2.5 block text-black dark:text-white"
+                    htmlFor="tempat"
+                  >
+                    Tempat Simpan
+                  </label>
+                  <input
+                    autoComplete="off"
+                    id="tempat"
+                    type="string"
+                    placeholder="Masukkan tempat simpan barang"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-not-allowed disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    onChange={(e) => setTempat(e.target.value)}
+                    // value={tempat}
+                  />
                 </div>
                 {/* <div className="mb-4.5">
                     <label

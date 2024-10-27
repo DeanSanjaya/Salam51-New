@@ -15,6 +15,7 @@ const InputBarang = () => {
   const [satuanWaktu, setSatuanWaktu] = useState('');
   const [rerata, setRerata] = useState('');
   const [safetyStock, setSafetyStock] = useState('');
+  const [tempat, setTempat] = useState('');
 
   const sweetAlert = (title, icon) => {
     Swal.fire({
@@ -35,7 +36,8 @@ const InputBarang = () => {
       rerata &&
       safetyStock &&
       satuanBarang &&
-      satuanWaktu
+      satuanWaktu &&
+      tempat
     ) {
       axios
         .post('http://localhost:5000/items', {
@@ -44,6 +46,7 @@ const InputBarang = () => {
             {
               jumlah,
               tanggal,
+              tempat,
             },
           ],
           leadTime,
@@ -73,6 +76,7 @@ const InputBarang = () => {
     setSafetyStock('');
     setSatuanBarang('');
     setSatuanWaktu('');
+    setTempat('');
   };
 
   return (
@@ -153,6 +157,23 @@ const InputBarang = () => {
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       onChange={(e) => setRerata(e.target.value)}
                       value={rerata}
+                    />
+                  </div>
+                  <div className="mb-4.5">
+                    <label
+                      className="mb-2.5 block text-black dark:text-white"
+                      htmlFor="tempat"
+                    >
+                      Tempat Simpan
+                    </label>
+                    <input
+                      autoComplete="off"
+                      id="tempat"
+                      type="text"
+                      placeholder="Masukkan barang disimpan"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      onChange={(e) => setTempat(e.target.value)}
+                      value={tempat}
                     />
                   </div>
                 </div>

@@ -33,35 +33,80 @@ const SignIn = () => {
     });
   };
 
+  // const handleAuth = async (e) => {
+  //   e.preventDefault();
+  //   axios
+  //     .post('http://localhost:5000/login', { username, password })
+  //     .then((result) => {
+  //       if (result.data.role == 'user') {
+  //         alertTopEnd.fire({
+  //           icon: 'success',
+  //           title: 'Login berhasil',
+  //         });
+  //         sessionStorage.setItem('username', username);
+  //         sessionStorage.setItem('role', 'user');
+  //         navigate('/home-user');
+  //       } else if (result.data.role == 'admin') {
+  //         alertTopEnd.fire({
+  //           icon: 'success',
+  //           title: 'Login berhasil',
+  //         });
+  //         sessionStorage.setItem('username', username);
+  //         sessionStorage.setItem('role', 'admin');
+  //         navigate('/home-admin');
+  //       } else if (result.data.message == 'no username') {
+  //         loginFailed('Username tidak terdaftar');
+  //       } else if (result.data.message == 'password salah') {
+  //         loginFailed('Password salah');
+  //       } else {
+  //         loginFailed('Login gagal');
+  //       }
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
+
   const handleAuth = async (e) => {
     e.preventDefault();
-    axios
-      .post('http://localhost:5000/login', { username, password })
-      .then((result) => {
-        sessionStorage.setItem('key', username);
-        if (result.data.message == 'login user') {
-          alertTopEnd.fire({
-            icon: 'success',
-            title: 'Login berhasil',
-          });
 
-          navigate('/home');
-        } else if (result.data.message == 'login admin') {
-          alertTopEnd.fire({
-            icon: 'success',
-            title: 'Login berhasil',
-          });
+    try {
+      const response = await axios.post('http://localhost:5000/login', {
+        username,
+        password,
+      });
+      const result = response.data;
 
-          navigate('https://youtube.com');
-        } else if (result.data.message == 'no username') {
-          loginFailed('Username tidak terdaftar');
-        } else if (result.data.message == 'password salah') {
-          loginFailed('Password salah');
-        } else {
-          loginFailed('Login gagal');
-        }
-      })
-      .catch((err) => console.log(err));
+      if (result.user && result.user.role === 'user') {
+        // Jika user adalah role "user"
+        alertTopEnd.fire({
+          icon: 'success',
+          title: 'Login berhasil',
+        });
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('role', 'user');
+        navigate('/home-user');
+      } else if (result.user && result.user.role === 'admin') {
+        // Jika user adalah role "admin"
+        alertTopEnd.fire({
+          icon: 'success',
+          title: 'Login berhasil',
+        });
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('role', 'admin');
+        navigate('/home-admin');
+      } else if (result.message === 'no username') {
+        // Jika username tidak terdaftar
+        loginFailed('Username tidak terdaftar');
+      } else if (result.message === 'password salah') {
+        // Jika password salah
+        loginFailed('Password salah');
+      } else {
+        // Jika login gagal karena alasan lain
+        loginFailed('Login gagal');
+      }
+    } catch (err) {
+      console.error('Error during login:', err);
+      loginFailed('Terjadi kesalahan saat login');
+    }
   };
 
   return (

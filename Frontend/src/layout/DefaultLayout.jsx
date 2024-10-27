@@ -1,10 +1,9 @@
-import React, { useState, ReactNode } from 'react';
+import { useState } from 'react';
 import Header from '../components/Header/index';
 import Sidebar from '../components/Sidebar/index';
 
-const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+const DefaultLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
       <div className="flex h-screen overflow-hidden">

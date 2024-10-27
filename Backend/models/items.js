@@ -6,6 +6,7 @@ const itemsSchema = new mongoose.Schema({
 		{
 			jumlah: Number,
 			tanggal: Date,
+			tempat: String,
 		},
 	],
 	totalJumlah: Number,

@@ -33,10 +33,10 @@ const DetailBarang = () => {
   };
 
   const handleDelete = async (detailId) => {
-    if (item.detail.length === 1) {
-      const isConfirmed = await sweetConfirmationAlert(detailId);
-      if (!isConfirmed) return;
-    }
+    // if (item.detail.length === 1) {
+    //   const isConfirmed = await sweetConfirmationAlert(detailId);
+    //   if (!isConfirmed) return;
+    // }
 
     try {
       await axios.delete(
@@ -87,6 +87,9 @@ const DetailBarang = () => {
                   Tanggal Barang Masuk
                 </th>
                 <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                  Tempat Simpan Barang
+                </th>
+                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                   Aksi
                 </th>
               </tr>
@@ -116,11 +119,15 @@ const DetailBarang = () => {
                           .replace(/\//g, '-')}
                       </h5>
                     </td>
-
+                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                      <h5 className="text-black dark:text-white text-center">
+                        {detailItem.tempat}
+                      </h5>
+                    </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <div className="flex justify-center items-center space-x-3.5">
                         <button
-                          onClick={() => handleDelete(detailItem._id)} // Panggil handleDelete dengan ID detailItem
+                          onClick={() => handleDelete(detailItem._id)}
                           className="hover:text-primary"
                         >
                           <svg

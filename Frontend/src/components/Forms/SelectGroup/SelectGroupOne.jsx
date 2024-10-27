@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const SelectGroupOne: React.FC = ({ satuanWaktu, setSatuanWaktu }) => {
-  const [selectedOption, setSelectedOption] = useState<string>(satuanWaktu);
+const SelectGroupOne = ({ satuanWaktu, setSatuanWaktu }) => {
+  const [selectedOption, setSelectedOption] = useState(satuanWaktu);
 
   useEffect(() => {
     setSelectedOption(satuanWaktu);
@@ -13,8 +13,7 @@ const SelectGroupOne: React.FC = ({ satuanWaktu, setSatuanWaktu }) => {
         className="mb-2.5 block text-black dark:text-white"
         htmlFor="satuan-waktu"
       >
-        {' '}
-        Satuan Waktu{' '}
+        Satuan Waktu
       </label>
 
       <div className="relative z-20 bg-transparent dark:bg-form-input">
@@ -25,9 +24,10 @@ const SelectGroupOne: React.FC = ({ satuanWaktu, setSatuanWaktu }) => {
             const value = e.target.value;
             setSelectedOption(value);
             setSatuanWaktu(value);
-            
           }}
-          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
+          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input ${
+            selectedOption ? 'text-black dark:text-white' : ''
+          }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
             Pilih satuan waktu

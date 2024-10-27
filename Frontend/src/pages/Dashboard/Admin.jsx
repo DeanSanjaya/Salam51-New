@@ -5,7 +5,7 @@ import ChartThree from '../../components/Charts/ChartThree';
 import ChartTwo from '../../components/Charts/ChartTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
 
-const Dashboard: React.FC = () => {
+const DashboardAdmin = () => {
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
@@ -99,14 +99,11 @@ const Dashboard: React.FC = () => {
         <ChartOne />
         <ChartTwo />
         <ChartThree />
-        
-        <div className="col-span-12 xl:col-span-8">
-          
-        </div>
-        
+
+        <div className="col-span-12 xl:col-span-8"></div>
       </div>
     </DefaultLayout>
   );
 };
 
-export default Dashboard;
+export default DashboardAdmin;

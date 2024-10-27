@@ -10,7 +10,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Koneksi ke MongoDB
 mongoose
 	.connect(MONGO_URL)
 	.then(() => console.log("Connected to MongoDB"))

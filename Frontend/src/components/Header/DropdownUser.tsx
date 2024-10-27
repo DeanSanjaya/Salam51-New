@@ -7,6 +7,12 @@ const DropdownUser = () => {
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
 
+  const username = sessionStorage.getItem('username');
+  const role = sessionStorage.getItem('role');
+  const capitalizeSentence = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
@@ -36,10 +42,11 @@ const DropdownUser = () => {
   const navigate = useNavigate();
 
   const handleLogOut = () => {
-    sessionStorage.removeItem('key');
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('role');
     navigate('/');
   };
-  
+
   return (
     <div className="relative">
       <Link
@@ -50,9 +57,9 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {`dean`}
+            {`${capitalizeSentence(username)}`}
           </span>
-          <span className="block text-xs">{`manager`}</span>
+          <span className="block text-xs">{`${capitalizeSentence(role)}`}</span>
         </span>
         <svg
           className="hidden fill-current sm:block"

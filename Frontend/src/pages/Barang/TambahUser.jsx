@@ -1,18 +1,16 @@
 import { useNavigate } from 'react-router-dom';
-import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import DefaultLayout from '../layout/DefaultLayout';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import DefaultLayout from '../../layout/DefaultLayout';
 import axios from 'axios';
-import { useState } from 'react';
 import Swal from 'sweetalert2';
+import { useState } from 'react';
 
-const Settings = () => {
-  const navigate = useNavigate();
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
+const TambahUser = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const role = sessionStorage.getItem('role');
 
+  const navigate = useNavigate();
   const sweetAlert = (message, icon) => {
     Swal.fire({
       title: message,
@@ -29,42 +27,53 @@ const Settings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (newPassword !== confirmPassword) {
-      sweetAlert('Password baru tidak sama', 'error');
+    if (!username) {
+      sweetAlert('Username tidak boleh kosong', 'error');
       return;
     }
-    const key = sessionStorage.getItem('username');
+
+    if (!password) {
+      sweetAlert('Password tidak boleh kosong', 'error');
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        'http://localhost:5000/change-password',
-        {
-          key,
-          oldPassword,
-          newPassword,
-        },
-      );
-      if (response.data.message == 'passwordnya sama') {
-        sweetAlert('Password baru dan lama anda sama', 'error');
-      } else if (response.data.message == 'password salah') {
-        sweetAlert('Password anda salah', 'error');
-      } else if (response.data.message == 'berhasil ganti') {
-        sweetAlert('Password anda berhasil diganti', 'success');
+      const response = await axios.post('http://localhost:5000/addUser', {
+        username,
+        password,
+        role: 'user',
+      });
+      if (response.status === 201) {
+        sweetAlert('User berhasil ditambahkan', 'success');
+      } else if (response.message === 'Username sudah terpakai') {
+        sweetAlert('Username sudah terpakai', 'error');
       } else {
-        alert('Failed to change password: ' + response.data.message);
+        sweetAlert('Gagal menambahkan user: ' + response.data.message, 'error');
       }
     } catch (error) {
-      alert('Error: ' + (error.response?.data?.message || error.message));
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Terjadi kesalahan';
+
+      if (error.response && error.response.status === 400) {
+        if (errorMessage === 'Username sudah terpakai') {
+          sweetAlert('Username sudah terpakai', 'error');
+        } else {
+          sweetAlert('Gagal menambahkan user: ' + errorMessage, 'error');
+        }
+      } else {
+        alert('Error: ' + errorMessage);
+      }
     }
   };
 
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-180">
-        <Breadcrumb pageName="Settings" />
+        <Breadcrumb pageName="Tambah User" />
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">
-              Ganti Sandi
+              Tambah User
             </h3>
           </div>
           <div className="p-7">
@@ -72,9 +81,9 @@ const Settings = () => {
               <div className="mb-5.5">
                 <label
                   className="mb-3 block text-sm font-medium text-black dark:text-white"
-                  htmlFor="password-lama"
+                  htmlFor="username"
                 >
-                  Password lama
+                  Username
                 </label>
                 <div className="relative">
                   <span className="absolute left-4.5 top-4">
@@ -99,22 +108,20 @@ const Settings = () => {
                   </span>
                   <input
                     className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    name="password-lama"
-                    id="password-lama"
-                    type="password"
-                    value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)}
-                    required
+                    name="username"
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
               </div>
-
               <div className="mb-5.5">
                 <label
                   className="mb-3 block text-sm font-medium text-black dark:text-white"
-                  htmlFor="password-baru"
+                  htmlFor="password"
                 >
-                  Password baru
+                  Password
                 </label>
                 <div className="relative">
                   <span className="absolute left-4.5 top-4">
@@ -139,12 +146,11 @@ const Settings = () => {
                   </span>
                   <input
                     className="w-full rounded border border-stroke bg-gray py-3 px-4.5 pl-11.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    name="password-baru"
-                    id="password-baru"
+                    name="password"
+                    id="password"
                     type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
@@ -152,9 +158,9 @@ const Settings = () => {
               <div className="mb-5.5">
                 <label
                   className="mb-3 block text-sm font-medium text-black dark:text-white"
-                  htmlFor="konfirmasi"
+                  htmlFor="role"
                 >
-                  Konfirmasi Password Baru
+                  Role
                 </label>
                 <div className="relative">
                   <span className="absolute left-4.5 top-4">
@@ -179,12 +185,11 @@ const Settings = () => {
                   </span>
                   <input
                     className="w-full rounded border border-stroke bg-gray py-3 px-4.5 pl-11.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    name="konfirmasi"
-                    id="konfirmasi"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
+                    name="role"
+                    id="role"
+                    type="text"
+                    value={'user'}
+                    disabled
                   />
                 </div>
               </div>
@@ -212,4 +217,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default TambahUser;

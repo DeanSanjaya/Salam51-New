@@ -7,6 +7,37 @@ const getItems = (req, res) => {
 		.catch((err) => res.json(err));
 };
 
+const getTotalItems = async (req, res) => {
+	try {
+		const result = await itemsModel.aggregate([
+			{
+				$group: {
+					_id: null, // Grouping without a specific key to get a total
+					totalItems: { $sum: "$totalJumlah" }, // Sum up the totalJumlah field
+				},
+			},
+		]);
+
+		// Check if there are any results
+		const totalItems = result.length > 0 ? result[0].totalItems : 0;
+
+		res.status(200).json({ totalItems });
+	} catch (error) {
+		console.error("Error getting total items:", error);
+		res.status(500).json({ message: "Error getting total items" });
+	}
+};
+
+const getCollection = async (req, res) => {
+	try {
+		const count = await itemsModel.countDocuments({});
+		res.status(200).json({ count });
+	} catch (error) {
+		console.error("error getting count: ", error);
+		res.status(500).json({ message: "error getting count" });
+	}
+};
+
 const getItemById = (req, res) => {
 	const _id = req.params.id;
 	itemsModel
@@ -22,16 +53,46 @@ const createItem = (req, res) => {
 		.catch((err) => res.status(400).json(err));
 };
 
-const updateItem = (req, res) => {
-	const _id = req.params.id;
-	const updates = {};
-	if (req.body.nama) updates.nama = req.body.nama;
-	if (req.body.tanggal) updates.tanggal = req.body.tanggal;
-	if (req.body.jumlah) updates.jumlah = req.body.jumlah;
-	itemsModel
-		.findByIdAndUpdate(_id, { $set: updates }, { new: true })
-		.then((item) => res.json(item))
-		.catch((err) => res.json(err));
+const outItem = async (req, res) => {
+	const { id } = req.params;
+	const { jumlahKeluar } = req.body;
+
+	try {
+		const item = await itemsModel.findById(id);
+
+		let remainingToRemove = jumlahKeluar;
+		const detailYangDigunakan = [];
+
+		for (let i = 0; i < item.detail.length; i++) {
+			const detail = item.detail[i];
+
+			if (remainingToRemove <= 0) break;
+
+			if (remainingToRemove >= detail.jumlah) {
+				remainingToRemove -= detail.jumlah;
+				detailYangDigunakan.push({ tempat: detail.tempat, jumlahYangDikeluarkan: detail.jumlah });
+				detail.jumlah = 0;
+			} else {
+				detail.jumlah -= remainingToRemove;
+				detailYangDigunakan.push({ tempat: detail.tempat, jumlahYangDikeluarkan: remainingToRemove });
+				remainingToRemove = 0;
+			}
+		}
+
+		item.detail = item.detail.filter((detail) => detail.jumlah > 0);
+		item.totalJumlah = item.detail.reduce((total, d) => total + d.jumlah, 0);
+
+		await item.save();
+
+		return res.status(200).json({
+			message: "Barang berhasil dikeluarkan",
+			item,
+			detailYangDigunakan,
+		});
+	} catch (error) {
+		console.error("Error updating detail:", error);
+		res.status(500).json({ message: "Terjadi kesalahan saat mengupdate detail", error: error.message });
+	}
 };
 
 const deleteItem = (req, res) => {
@@ -64,10 +125,10 @@ const deleteDetail = async (req, res) => {
 
 		item.detail = updatedDetails;
 
-		if (item.detail.length === 0) {
-			await itemsModel.findByIdAndDelete(itemId);
-			return res.status(200).json({ message: "Detail barang berhasil dihapus, item juga dihapus karena tidak ada detail tersisa." });
-		}
+		// if (item.detail.length === 0) {
+		// 	await itemsModel.findByIdAndDelete(itemId);
+		// 	return res.status(200).json({ message: "Detail barang berhasil dihapus, item juga dihapus karena tidak ada detail tersisa." });
+		// }
 
 		const totalJumlah = item.detail.reduce((total, detail) => total + detail.jumlah, 0);
 		item.totalJumlah = totalJumlah; // Update total jumlah barang
@@ -88,12 +149,14 @@ const addDetail = async (req, res) => {
 		}
 		const jumlah = parseInt(req.body.jumlah);
 		const tanggal = new Date(req.body.tanggal);
+		const tempat = req.body.tempat;
 		if (isNaN(jumlah) || !tanggal.getTime()) {
 			return res.status(400).json({ message: "Data tidak valid" });
 		}
 		item.detail.push({
 			jumlah,
 			tanggal,
+			tempat,
 		});
 		item.detail.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
 		const totalJumlah = item.detail.reduce((total, detail) => total + detail.jumlah, 0);
@@ -108,9 +171,11 @@ const addDetail = async (req, res) => {
 
 module.exports = {
 	getItems,
+	getCollection,
+	getTotalItems,
 	getItemById,
 	createItem,
-	updateItem,
+	outItem,
 	deleteItem,
 	addDetail,
 	deleteDetail,

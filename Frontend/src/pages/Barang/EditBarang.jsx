@@ -1,39 +1,57 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import DefaultLayout from '../../layout/DefaultLayout';
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const KeluarBarang = () => {
-  const [nama, setNama] = useState();
-  const [jumlah, setJumlah] = useState();
-  const [tanggal, setTanggal] = useState(null);
 
-  const formattedDate = tanggal
-    ? new Date(tanggal).toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      })
-    : null;
+const EditBarang = () => {
+  const { id } = useParams();
+  const [nama, setNama] = useState('');
+  const [jumlah, setJumlah] = useState<number>(0);
+  const [tanggal, setTanggal] = useState<Date | null>(null);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http:/localhost:5000/items/${id}`);
+        setNama(response.data[0].nama);
+        setJumlah(response.data[0].jumlah);
+        setTanggal(
+          response.data[0].tanggal ? new Date(response.data[0].tanggal) : null,
+        );
+        console.log(response);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post('http://localhost:5000/items', {
+    const formattedDate = tanggal ? tanggal.toISOString().slice(0, 10) : null;
+    try {
+      await axios.put(`http://localhost:5000/items/${id}`, {
         nama,
         jumlah,
         tanggal: formattedDate,
-      })
-      .then((result) => console.log(result))
-      .catch((err) => console.log(err));
+      });
+      console.log('Data updated successfully!');
+      // Optionally, redirect or show success message
+    } catch (error) {
+      console.error('Error updating data:', error);
+      // Handle error updating data, redirect or show error message
+    }
+    navigate('/barang/list-barang');
   };
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Keluar Barang" />
+      <Breadcrumb pageName="Edit Barang" />
       <div className="flex flex-col gap-9">
-        {/* <!-- Contact Form --> */}
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">
@@ -48,26 +66,34 @@ const KeluarBarang = () => {
                 </label>
                 <input
                   type="text"
+                  value={nama}
+                  onChange={(e) => setNama(e.target.value)}
                   placeholder="Masukkan nama barang"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  onChange={(e) => setNama(e.target.value)}
                 />
               </div>
+
               <div className="mb-4.5">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Jumlah barang
                 </label>
                 <input
-                  type="text"
+                  type="number"
+                  value={jumlah}
+                  onChange={(e) => setJumlah(parseInt(e.target.value))}
                   placeholder="Masukkan jumlah barang"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  onChange={(e) => setJumlah(e.target.value)}
                 />
               </div>
+
               <div className="mb-4.5">
                 <DatePicker tanggal={tanggal} setTanggal={setTanggal} />
               </div>
-              <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+
+              <button
+                type="submit"
+                className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+              >
                 Konfirmasi
               </button>
             </div>
@@ -78,4 +104,4 @@ const KeluarBarang = () => {
   );
 };
 
-export default KeluarBarang;
+export default EditBarang;
