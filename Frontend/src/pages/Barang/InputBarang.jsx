@@ -16,7 +16,7 @@ const InputBarang = () => {
   const [rerata, setRerata] = useState('');
   const [safetyStock, setSafetyStock] = useState('');
   const [tempat, setTempat] = useState('');
-  const user = sessionStorage.getItem('username');
+  const username = sessionStorage.getItem('username');
 
   const sweetAlert = (title, icon) => {
     Swal.fire({
@@ -25,6 +25,28 @@ const InputBarang = () => {
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'Tutup',
     });
+  };
+
+  // const convertLeadTimeToHours = (leadTime, satuanWaktu) => {
+  //   switch (satuanWaktu) {
+  //     case 'Hari':
+  //       return leadTime * 24;
+  //     case 'Bulan':
+  //       return leadTime * 30 * 24;
+  //     default:
+  //       return leadTime;
+  //   }
+  // };
+
+  const convertLeadTimeToDays = (leadTime, satuanWaktu) => {
+    switch (satuanWaktu) {
+      case 'Jam':
+        return leadTime / 24;
+      case 'Bulan':
+        return leadTime * 30;
+      default:
+        return leadTime;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -40,6 +62,19 @@ const InputBarang = () => {
       satuanWaktu &&
       tempat
     ) {
+      // const leadTimeInHours = convertLeadTimeToHours(
+      //   parseInt(leadTime, 10),
+      //   satuanWaktu,
+      // );
+      const leadTimeInDays = convertLeadTimeToDays(
+        parseInt(leadTime, 10),
+        satuanWaktu,
+      );
+      // const ROP1 =
+      //   leadTimeInHours * parseFloat(rerata) + parseInt(safetyStock, 10);
+      const ROP =
+        leadTimeInDays * parseFloat(rerata) + parseInt(safetyStock, 10);
+
       await axios
         .post('http://localhost:5000/items', {
           nama,
@@ -56,18 +91,16 @@ const InputBarang = () => {
           satuanBarang,
           satuanWaktu,
           totalJumlah: jumlah,
-          ROP:
-            parseInt(leadTime, 10) * parseFloat(rerata) +
-            parseInt(safetyStock, 10),
+          ROP,
         })
         .catch((err) => console.log(err));
       await axios
         .post('http://localhost:5000/transaksi/tambah', {
           namaBarang: nama,
-          jenisTransaksi: 'Penambahan Barang',
+          jenisTransaksi: 'Penambahan',
           jumlah,
           tanggalTransaksi: tanggal,
-          username: user,
+          username,
         })
         .catch((err) => console.log(err));
       handleReset();
@@ -158,7 +191,7 @@ const InputBarang = () => {
                       className="mb-2.5 block text-black dark:text-white"
                       htmlFor="rerata"
                     >
-                      Rata-rata Penjualan Selama {leadTime} {satuanWaktu}
+                      Rata-rata Penjualan Perharinya
                     </label>
                     <input
                       id="rerata"

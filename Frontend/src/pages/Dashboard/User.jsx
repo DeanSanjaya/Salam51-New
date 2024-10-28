@@ -10,7 +10,7 @@ const DashboardUser = () => {
   const [itemCount, setItemCount] = useState(0);
   const [totalItem, setTotalItem] = useState(0);
   const [transaksiCount, setTransaksiCount] = useState(0);
-  console.log(transaksiCount);
+  
 
   useEffect(() => {
     const fetchItemCount = async () => {

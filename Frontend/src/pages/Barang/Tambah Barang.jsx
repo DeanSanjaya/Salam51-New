@@ -55,7 +55,7 @@ const TambahBarang = () => {
         });
         await axios.post('http://localhost:5000/transaksi/tambah', {
           namaBarang: nama,
-          jenisTransaksi: 'Penambahan Barang',
+          jenisTransaksi: 'Penambahan',
           jumlah,
           tanggalTransaksi: new Date(tanggal),
           username,

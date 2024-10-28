@@ -9,6 +9,8 @@ const DetailBarang = () => {
   const { id } = useParams();
   const [item, setItem] = useState({});
   const navigate = useNavigate();
+  const username = sessionStorage.getItem('username');
+  const today = new Date();
 
   useEffect(() => {
     axios
@@ -32,11 +34,57 @@ const DetailBarang = () => {
   //   return result.isConfirmed;
   // };
 
+  // const handleDelete = async (detailId) => {
+  //   try {
+  //     await axios.delete(
+  //       `http://localhost:5000/items/${id}/detail/${detailId}`,
+  //     );
+  //     setItem((prevItem) => {
+  //       const updatedDetails = prevItem.detail.filter(
+  //         (detailItem) => detailItem._id !== detailId,
+  //       );
+  //       if (updatedDetails.length === 0) {
+  //         Swal.fire({
+  //           title: 'Detail berhasil dihapus',
+  //           icon: 'success',
+  //         });
+  //         navigate('/barang/list-barang');
+  //       }
+
+  //       return { ...prevItem, detail: updatedDetails };
+  //     });
+
+  //     if (item.detail.length > 1) {
+  //       Swal.fire({
+  //         title: 'Berhasil dihapus',
+  //         icon: 'success',
+  //       });
+  //     }
+  //     await axios.post('http://localhost:5000/transaksi/tambah', {
+  //       namaBarang: item.nama,
+  //       jenisTransaksi: 'Penghapusan Barang',
+  //       jumlah: detailItem.jumlah,
+  //       tanggalTransaksi: today,
+  //       username,
+  //     });
+  //   } catch (err) {
+  //     console.error('Error deleting detail:', err);
+  //     alert('Gagal menghapus detail barang.');
+  //   }
+  // };
+
   const handleDelete = async (detailId) => {
     try {
+      const detailToDelete = item.detail.find(
+        (detailItem) => detailItem._id === detailId,
+      );
+
+      const jumlahDihapus = detailToDelete.jumlah;
+
       await axios.delete(
         `http://localhost:5000/items/${id}/detail/${detailId}`,
       );
+
       setItem((prevItem) => {
         const updatedDetails = prevItem.detail.filter(
           (detailItem) => detailItem._id !== detailId,
@@ -45,6 +93,14 @@ const DetailBarang = () => {
         if (updatedDetails.length === 0) {
           Swal.fire({
             title: 'Detail berhasil dihapus',
+            // text: `Jumlah barang yang dihapus: ${jumlahDihapus}`,
+            icon: 'success',
+          });
+          navigate('/barang/list-barang');
+        } else {
+          Swal.fire({
+            title: 'Berhasil dihapus',
+            // text: `Jumlah barang yang dihapus: ${jumlahDihapus}`,
             icon: 'success',
           });
           navigate('/barang/list-barang');
@@ -52,12 +108,14 @@ const DetailBarang = () => {
 
         return { ...prevItem, detail: updatedDetails };
       });
-      if (item.detail.length > 1) {
-        Swal.fire({
-          title: 'Berhasil dihapus',
-          icon: 'success',
-        });
-      }
+
+      await axios.post('http://localhost:5000/transaksi/tambah', {
+        namaBarang: item.nama,
+        jenisTransaksi: 'Penghapusan',
+        jumlah: jumlahDihapus,
+        tanggalTransaksi: today,
+        username,
+      });
     } catch (err) {
       console.error('Error deleting detail:', err);
       alert('Gagal menghapus detail barang.');
@@ -145,7 +203,7 @@ const DetailBarang = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="text-center py-4">
+                  <td colSpan="6" className="text-center py-4">
                     Data tidak tersedia
                   </td>
                 </tr>

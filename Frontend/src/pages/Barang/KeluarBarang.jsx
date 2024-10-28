@@ -84,7 +84,7 @@ const KeluarBarang = () => {
           .join(', dan ');
 
         sweetAlert(
-          `Barang sebanyak ${jumlahKeluar} ${selectedItem.satuanBarang} berhasil keluar, dengan rincian:
+          `${selectedOption} sebanyak ${jumlahKeluar} ${selectedItem.satuanBarang} berhasil keluar, dengan rincian:
           ${detailPesan}.`,
           'success',
         );
@@ -100,7 +100,7 @@ const KeluarBarang = () => {
       }
       await axios.post('http://localhost:5000/transaksi/tambah', {
         namaBarang: selectedOption,
-        jenisTransaksi: 'Pengeluaran Barang',
+        jenisTransaksi: 'Pengeluaran',
         jumlah,
         tanggalTransaksi: today,
         username,

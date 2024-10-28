@@ -1,12 +1,52 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
 const Tabel = ({ items, setItems }) => {
   const username = sessionStorage.getItem('username');
   const today = new Date();
+  const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
   const navigate = useNavigate();
+
+  const sortData = (data, config) => {
+    const sortedData = [...data];
+    if (config.key) {
+      sortedData.sort((a, b) => {
+        if (config.key === 'jumlah') {
+          const totalJumlahA = a.detail.reduce(
+            (sum, item) => sum + item.jumlah,
+            0,
+          );
+          const totalJumlahB = b.detail.reduce(
+            (sum, item) => sum + item.jumlah,
+            0,
+          );
+          return config.direction === 'ascending'
+            ? totalJumlahA - totalJumlahB
+            : totalJumlahB - totalJumlahA;
+        }
+        if (a[config.key] < b[config.key]) {
+          return config.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[config.key] > b[config.key]) {
+          return config.direction === 'ascending' ? 1 : -1;
+        }
+        return 0; // jika kunci tidak dikenali
+      });
+    }
+    return sortedData;
+  };
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedItems = sortData(items, sortConfig);
 
   const swalAlert = (title, icon) => {
     Swal.fire({
@@ -43,7 +83,7 @@ const Tabel = ({ items, setItems }) => {
         swalAlert('Item berhasil dihapus', 'success');
         await axios.post('http://localhost:5000/transaksi/tambah', {
           namaBarang: itemToDelete.nama,
-          jenisTransaksi: 'Penghapusan Barang',
+          jenisTransaksi: 'Penghapusan',
           jumlah: itemToDelete.totalJumlah,
           tanggalTransaksi: today,
           username,
@@ -69,35 +109,44 @@ const Tabel = ({ items, setItems }) => {
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-center dark:bg-meta-4">
-              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">
+              <th
+                onClick={() => requestSort('no')}
+                className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white cursor-pointer"
+              >
                 No
               </th>
-              <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+              <th
+                onClick={() => requestSort('nama')}
+                className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11 cursor-pointer "
+              >
                 Nama Barang
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th
+                onClick={() => requestSort('jumlah')}
+                className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white cursor-pointer"
+              >
                 Jumlah Barang
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white ">
                 Satuan Barang
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Angka ROP
               </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white ">
                 Aksi
               </th>
             </tr>
           </thead>
           <tbody>
-            {items.length === 0 ? (
+            {sortedItems.length === 0 ? (
               <tr>
                 <td colSpan="6" className="text-center py-4">
                   Data tidak tersedia
                 </td>
               </tr>
             ) : (
-              items.map((item, key) => (
+              sortedItems.map((item, key) => (
                 <tr
                   key={key}
                   className={`border-b border-[#eee] dark:border-strokedark ${

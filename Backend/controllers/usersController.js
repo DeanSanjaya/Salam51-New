@@ -105,9 +105,20 @@ const addUser = async (req, res) => {
 	}
 };
 
+const getUserCount = async (req, res) => {
+	try {
+		const count = await usersModel.countDocuments({});
+		res.status(200).json({ count });
+	} catch (error) {
+		console.error("error getting count: ", error);
+		res.status(500).json({ message: "error getting count" });
+	}
+};
+
 module.exports = {
 	login,
 	changePassword,
 	resetPassword,
 	addUser,
+	getUserCount,
 };

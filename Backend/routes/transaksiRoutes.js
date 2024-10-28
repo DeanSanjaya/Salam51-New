@@ -4,6 +4,7 @@ const transaksiController = require("../controllers/transaksiController");
 
 router.post("/tambah", transaksiController.createTransaksi);
 
-router.get("/", transaksiController.getTransaksi);
+router.get("/getTransaksi", transaksiController.getTransaksi);
+router.get("/", transaksiController.getTransaksiCount);
 
 module.exports = router;

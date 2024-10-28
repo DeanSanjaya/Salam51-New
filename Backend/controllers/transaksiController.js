@@ -9,7 +9,14 @@ const createTransaksi = async (req, res) => {
 	}
 };
 
-const getTransaksi = async (req, res) => {
+const getTransaksi = (req, res) => {
+	transaksiModel
+		.find()
+		.then((transaksi) => res.json(transaksi))
+		.catch((err) => res.json(err));
+};
+
+const getTransaksiCount = async (req, res) => {
 	try {
 		const count = await transaksiModel.countDocuments({});
 		res.status(200).json({ count });
@@ -22,4 +29,5 @@ const getTransaksi = async (req, res) => {
 module.exports = {
 	createTransaksi,
 	getTransaksi,
+	getTransaksiCount,
 };

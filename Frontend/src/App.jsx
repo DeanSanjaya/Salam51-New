@@ -11,7 +11,8 @@ import TambahBarang from './pages/Barang/Tambah Barang';
 import DetailBarang from './pages/Barang/DetailBarang';
 import DashboardUser from './pages/Dashboard/User';
 import DashboardAdmin from './pages/Dashboard/Admin';
-import TambahUser from './pages/Barang/TambahUser';
+import TambahUser from './pages/TambahUser';
+import Laporan from './pages/Barang/Laporan';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -39,6 +40,7 @@ function App() {
         <Route path="/barang/detail-barang/:id" element={<DetailBarang />} />
         <Route path="/barang/keluar-barang" element={<KeluarBarang />} />
         <Route path="/barang/edit-barang/:id" element={<EditBarang />} />
+        <Route path="/laporan" element={<Laporan />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/tambah-user" element={<TambahUser />} />
       </Routes>
