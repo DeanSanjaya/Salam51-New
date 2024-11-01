@@ -38,6 +38,29 @@ const getCollection = async (req, res) => {
 	}
 };
 
+const getTotalJumlahItemsEachItem = async (req, res) => {
+	try {
+		const items = await itemsModel.aggregate([
+			{
+				$addFields: {
+					totalJumlah: { $sum: "$detail.jumlah" },
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					nama: 1,
+					totalJumlah: 1, // Menyembunyikan field detail
+				},
+			},
+		]);
+		res.status(200).json(items);
+	} catch (err) {
+		console.error("Error fetching total jumlah:", err);
+		res.status(500).json({ error: "Internal server error" });
+	}
+};
+
 const getItemById = (req, res) => {
 	const _id = req.params.id;
 	itemsModel
@@ -175,6 +198,7 @@ module.exports = {
 	getItems,
 	getCollection,
 	getTotalItems,
+	getTotalJumlahItemsEachItem,
 	getItemById,
 	createItem,
 	outItem,

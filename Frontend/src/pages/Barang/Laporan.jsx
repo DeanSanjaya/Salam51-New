@@ -23,7 +23,6 @@ const Laporan = () => {
         if (config.key === 'tanggalTransaksi') {
           aValue = Date.parse(aValue); // Mengonversi tanggal ke timestamp
           bValue = Date.parse(bValue);
-          
         }
         if (a[config.key] < b[config.key]) {
           return config.direction === 'ascending' ? -1 : 1;
@@ -102,7 +101,7 @@ const Laporan = () => {
                         {index + 1}
                       </h5>
                     </td>
-                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark ">
                       <h5 className="text-black dark:text-white text-center">
                         {detailtransaksi.namaBarang}
                       </h5>
@@ -112,7 +111,7 @@ const Laporan = () => {
                         {detailtransaksi.jenisTransaksi}
                       </h5>
                     </td>
-                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <h5 className="text-black dark:text-white text-center">
                         {detailtransaksi.jumlah}
                       </h5>

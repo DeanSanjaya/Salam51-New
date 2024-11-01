@@ -179,7 +179,7 @@ const Tabel = ({ items, setItems }) => {
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex justify-center items-center space-x-3.5">
                       {/* Tombol edit */}
-                      <button
+                      {/* <button
                         onClick={() => handleEdit(item._id)}
                         className="hover:text-primary"
                       >
@@ -193,7 +193,7 @@ const Tabel = ({ items, setItems }) => {
                         >
                           <polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon>
                         </svg>
-                      </button>
+                      </button> */}
                       {/* Tombol hapus */}
                       <button
                         onClick={() => handleDelete(item._id)}

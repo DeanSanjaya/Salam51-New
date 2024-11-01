@@ -11,6 +11,7 @@ const DashboardAdmin = () => {
   const [totalItem, setTotalItem] = useState(0);
   const [transaksiCount, setTransaksiCount] = useState(0);
   const [userCount, setUserCount] = useState(0);
+  const [totalJumlah, setTotalJumlah] = useState([]);
 
   useEffect(() => {
     const fetchItemCount = async () => {
@@ -56,6 +57,21 @@ const DashboardAdmin = () => {
       try {
         const response = await axios.get('http://localhost:5000/getUserCount');
         setUserCount(response.data.count);
+      } catch (error) {
+        console.error('Error fetching item count:', error);
+      }
+    };
+
+    fetchItemCount();
+  }, []);
+
+  useEffect(() => {
+    const fetchItemCount = async () => {
+      try {
+        const response = await axios.get(
+          'http://localhost:5000/items/totalJumlah',
+        );
+        setTotalJumlah(response.data);
       } catch (error) {
         console.error('Error fetching item count:', error);
       }
@@ -154,11 +170,9 @@ const DashboardAdmin = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
-        <ChartThree />
-
-        <div className="col-span-12 xl:col-span-8"></div>
+        <ChartThree totalJumlah={totalJumlah} />
+        {/* <ChartOne />
+        <ChartTwo /> */}
       </div>
     </DefaultLayout>
   );

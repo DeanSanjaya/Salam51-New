@@ -72,8 +72,9 @@ const InputBarang = () => {
       );
       // const ROP1 =
       //   leadTimeInHours * parseFloat(rerata) + parseInt(safetyStock, 10);
-      const ROP =
-        leadTimeInDays * parseFloat(rerata) + parseInt(safetyStock, 10);
+      const ROP = Math.ceil(
+        leadTimeInDays * parseFloat(rerata) + parseInt(safetyStock, 10),
+      );
 
       await axios
         .post('http://localhost:5000/items', {
