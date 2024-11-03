@@ -78,6 +78,46 @@ const createItem = async (req, res) => {
 	}
 };
 
+// const outItem = async (req, res) => {
+// 	const { id } = req.params;
+// 	const { jumlahKeluar } = req.body;
+
+// 	try {
+// 		const item = await itemsModel.findById(id);
+
+// 		let remainingToRemove = jumlahKeluar;
+// 		const detailYangDigunakan = [];
+
+// 		for (let i = 0; i < item.detail.length; i++) {
+// 			const detail = item.detail[i];
+// 			if (remainingToRemove <= 0) break;
+// 			if (remainingToRemove >= detail.jumlah) {
+// 				remainingToRemove -= detail.jumlah;
+// 				detailYangDigunakan.push({ tempat: detail.tempat, jumlahYangDikeluarkan: detail.jumlah });
+// 				detail.jumlah = 0;
+// 			} else {
+// 				detail.jumlah -= remainingToRemove;
+// 				detailYangDigunakan.push({ tempat: detail.tempat, jumlahYangDikeluarkan: remainingToRemove });
+// 				remainingToRemove = 0;
+// 			}
+// 		}
+
+// 		item.detail = item.detail.filter((detail) => detail.jumlah > 0);
+// 		item.totalJumlah = item.detail.reduce((total, d) => total + d.jumlah, 0);
+
+// 		await item.save();
+
+// 		return res.status(200).json({
+// 			message: "Barang berhasil dikeluarkan",
+// 			item,
+// 			detailYangDigunakan,
+// 		});
+// 	} catch (error) {
+// 		console.error("Error updating detail:", error);
+// 		res.status(500).json({ message: "Terjadi kesalahan saat mengupdate detail", error: error.message });
+// 	}
+// };
+
 const outItem = async (req, res) => {
 	const { id } = req.params;
 	const { jumlahKeluar } = req.body;
@@ -94,16 +134,25 @@ const outItem = async (req, res) => {
 			if (remainingToRemove <= 0) break;
 
 			if (remainingToRemove >= detail.jumlah) {
+				// Jika jumlah yang harus dikurangi lebih besar atau sama dengan jumlah item saat ini
 				remainingToRemove -= detail.jumlah;
-				detailYangDigunakan.push({ tempat: detail.tempat, jumlahYangDikeluarkan: detail.jumlah });
+				detailYangDigunakan.push({
+					tempat: detail.tempat,
+					jumlahYangDikeluarkan: detail.jumlah,
+				});
 				detail.jumlah = 0;
 			} else {
+				// Jika jumlah yang harus dikurangi lebih kecil dari jumlah item saat ini
 				detail.jumlah -= remainingToRemove;
-				detailYangDigunakan.push({ tempat: detail.tempat, jumlahYangDikeluarkan: remainingToRemove });
+				detailYangDigunakan.push({
+					tempat: detail.tempat,
+					jumlahYangDikeluarkan: remainingToRemove,
+				});
 				remainingToRemove = 0;
 			}
 		}
 
+		// Filter detail yang jumlahnya 0
 		item.detail = item.detail.filter((detail) => detail.jumlah > 0);
 		item.totalJumlah = item.detail.reduce((total, d) => total + d.jumlah, 0);
 
@@ -149,11 +198,6 @@ const deleteDetail = async (req, res) => {
 		const updatedDetails = item.detail.filter((detail) => detail._id.toString() !== detailId);
 
 		item.detail = updatedDetails;
-
-		// if (item.detail.length === 0) {
-		// 	await itemsModel.findByIdAndDelete(itemId);
-		// 	return res.status(200).json({ message: "Detail barang berhasil dihapus, item juga dihapus karena tidak ada detail tersisa." });
-		// }
 
 		const totalJumlah = item.detail.reduce((total, detail) => total + detail.jumlah, 0);
 		item.totalJumlah = totalJumlah; // Update total jumlah barang
