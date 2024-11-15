@@ -18,7 +18,6 @@ const login = async (req, res) => {
 		}
 
 		// Jika login berhasil
-		console.log(user);
 		return res.json({ user });
 
 		// Jika ingin menambahkan pemeriksaan role
@@ -83,14 +82,12 @@ const changePassword = async (req, res) => {
 
 const addUser = async (req, res) => {
 	try {
-		// Cek apakah username sudah ada
 		const existingUser = await usersModel.findOne({ username: req.body.username });
 
 		if (existingUser) {
 			return res.status(400).json({ message: "Username sudah terpakai" });
 		}
 
-		// Hash password
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
 		const newUser = await usersModel.create({

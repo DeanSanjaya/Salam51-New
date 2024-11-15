@@ -12,6 +12,19 @@ const DetailBarang = () => {
   const username = sessionStorage.getItem('username');
   const today = new Date();
 
+  const sweetAlert = () => {
+    Swal.fire({
+      title: 'Detail berhasil dihapus',
+      icon: 'success',
+      showDenyButton: true,
+      denyButtonText: 'Hapus lagi',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate('/barang/list-barang');
+      }
+    });
+  };
+
   useEffect(() => {
     axios
       .get(`http://localhost:5000/items/${id}`)
@@ -20,58 +33,6 @@ const DetailBarang = () => {
       })
       .catch((err) => console.log(err));
   }, [id]);
-
-  // const sweetConfirmationAlert = async () => {
-  //   const result = await Swal.fire({
-  //     title: 'Apakah anda yakin?',
-  //     text: 'Data dari barang ini hanya tersisa 1',
-  //     icon: 'question',
-  //     showCancelButton: true,
-  //     confirmButtonColor: '#3085d6',
-  //     cancelButtonColor: '#d33',
-  //     confirmButtonText: 'Iya',
-  //   });
-  //   return result.isConfirmed;
-  // };
-
-  // const handleDelete = async (detailId) => {
-  //   try {
-  //     await axios.delete(
-  //       `http://localhost:5000/items/${id}/detail/${detailId}`,
-  //     );
-  //     setItem((prevItem) => {
-  //       const updatedDetails = prevItem.detail.filter(
-  //         (detailItem) => detailItem._id !== detailId,
-  //       );
-  //       if (updatedDetails.length === 0) {
-  //         Swal.fire({
-  //           title: 'Detail berhasil dihapus',
-  //           icon: 'success',
-  //         });
-  //         navigate('/barang/list-barang');
-  //       }
-
-  //       return { ...prevItem, detail: updatedDetails };
-  //     });
-
-  //     if (item.detail.length > 1) {
-  //       Swal.fire({
-  //         title: 'Berhasil dihapus',
-  //         icon: 'success',
-  //       });
-  //     }
-  //     await axios.post('http://localhost:5000/transaksi/tambah', {
-  //       namaBarang: item.nama,
-  //       jenisTransaksi: 'Penghapusan Barang',
-  //       jumlah: detailItem.jumlah,
-  //       tanggalTransaksi: today,
-  //       username,
-  //     });
-  //   } catch (err) {
-  //     console.error('Error deleting detail:', err);
-  //     alert('Gagal menghapus detail barang.');
-  //   }
-  // };
 
   const handleDelete = async (detailId) => {
     try {
@@ -90,21 +51,7 @@ const DetailBarang = () => {
           (detailItem) => detailItem._id !== detailId,
         );
 
-        if (updatedDetails.length === 0) {
-          Swal.fire({
-            title: 'Detail berhasil dihapus',
-            // text: `Jumlah barang yang dihapus: ${jumlahDihapus}`,
-            icon: 'success',
-          });
-          navigate('/barang/list-barang');
-        } else {
-          Swal.fire({
-            title: 'Berhasil dihapus',
-            // text: `Jumlah barang yang dihapus: ${jumlahDihapus}`,
-            icon: 'success',
-          });
-          navigate('/barang/list-barang');
-        }
+        sweetAlert();
 
         return { ...prevItem, detail: updatedDetails };
       });

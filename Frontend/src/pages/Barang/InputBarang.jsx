@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DatePicker from '../../components/Forms/DatePicker/DatePicker';
 import DefaultLayout from '../../layout/DefaultLayout';
+import { calculateROP } from '../../utils/ropFunction';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
@@ -27,28 +28,6 @@ const InputBarang = () => {
     });
   };
 
-  // const convertLeadTimeToHours = (leadTime, satuanWaktu) => {
-  //   switch (satuanWaktu) {
-  //     case 'Hari':
-  //       return leadTime * 24;
-  //     case 'Bulan':
-  //       return leadTime * 30 * 24;
-  //     default:
-  //       return leadTime;
-  //   }
-  // };
-
-  const convertLeadTimeToDays = (leadTime, satuanWaktu) => {
-    switch (satuanWaktu) {
-      case 'Jam':
-        return leadTime / 24;
-      case 'Bulan':
-        return leadTime * 30;
-      default:
-        return leadTime;
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -58,24 +37,11 @@ const InputBarang = () => {
       leadTime &&
       rerata &&
       safetyStock &&
-      satuanBarang &&
       satuanWaktu &&
+      satuanBarang &&
       tempat
     ) {
-      // const leadTimeInHours = convertLeadTimeToHours(
-      //   parseInt(leadTime, 10),
-      //   satuanWaktu,
-      // );
-      const leadTimeInDays = convertLeadTimeToDays(
-        parseInt(leadTime, 10),
-        satuanWaktu,
-      );
-      // const ROP1 =
-      //   leadTimeInHours * parseFloat(rerata) + parseInt(safetyStock, 10);
-      const ROP = Math.ceil(
-        leadTimeInDays * parseFloat(rerata) + parseInt(safetyStock, 10),
-      );
-
+      const ROP = calculateROP(leadTime, satuanWaktu, rerata, safetyStock);
       await axios
         .post('http://localhost:5000/items', {
           nama,

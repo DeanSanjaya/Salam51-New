@@ -21,7 +21,7 @@ const Laporan = () => {
         let aValue = a[config.key];
         let bValue = b[config.key];
         if (config.key === 'tanggalTransaksi') {
-          aValue = Date.parse(aValue); // Mengonversi tanggal ke timestamp
+          aValue = Date.parse(aValue);
           bValue = Date.parse(bValue);
         }
         if (a[config.key] < b[config.key]) {
@@ -54,10 +54,7 @@ const Laporan = () => {
           <table className="w-full table-auto">
             <thead>
               <tr className="bg-gray-2 text-center dark:bg-meta-4">
-                <th
-                  onClick={() => requestSort('no')}
-                  className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white cursor-pointer"
-                >
+                <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white cursor-pointer">
                   No
                 </th>
                 <th
@@ -85,7 +82,7 @@ const Laporan = () => {
                   Tanggal
                 </th>
                 <th
-                  onClick={() => requestSort('oleh')}
+                  onClick={() => requestSort('username')}
                   className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white cursor-pointer"
                 >
                   Oleh

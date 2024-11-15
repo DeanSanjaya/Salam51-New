@@ -52,13 +52,18 @@ const KeluarBarang = () => {
     const jumlahKeluar = parseInt(jumlah, 10);
     const selectedItem = items.find((item) => item.nama === selectedOption);
 
-    if (jumlah > selectedItem.totalJumlah) {
-      sweetAlert('Jumlah barang tidak mencukupi', 'error');
+    if (!totalStok) {
+      sweetAlert('Pilih barang yang ingin dikeluarkan', 'error');
       return;
     }
 
     if (!jumlah) {
-      sweetAlert(`Masukkan jumlah barang`, `error`);
+      sweetAlert(`Masukkan jumlah barang yang ingin dikeluarkan`, `error`);
+      return;
+    }
+
+    if (jumlah > selectedItem.totalJumlah) {
+      sweetAlert('Jumlah barang tidak mencukupi', 'error');
       return;
     }
 

@@ -12,6 +12,7 @@ const Settings = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const role = sessionStorage.getItem('role');
+  const key = sessionStorage.getItem('username');
 
   const sweetAlert = (message, icon) => {
     Swal.fire({
@@ -29,11 +30,16 @@ const Settings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      sweetAlert('Input belum lengkap', 'error');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       sweetAlert('Password baru tidak sama', 'error');
       return;
     }
-    const key = sessionStorage.getItem('username');
+
     try {
       const response = await axios.post(
         'http://localhost:5000/change-password',
@@ -60,11 +66,11 @@ const Settings = () => {
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-180">
-        <Breadcrumb pageName="Settings" />
+        <Breadcrumb pageName="Ganti Password" />
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">
-              Ganti Sandi
+              Masukkan password lama dan baru
             </h3>
           </div>
           <div className="p-7">
@@ -104,7 +110,6 @@ const Settings = () => {
                     type="password"
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
-                    required
                   />
                 </div>
               </div>
@@ -144,7 +149,6 @@ const Settings = () => {
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    required
                   />
                 </div>
               </div>
@@ -184,7 +188,6 @@ const Settings = () => {
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
                   />
                 </div>
               </div>
@@ -195,7 +198,7 @@ const Settings = () => {
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                   type="button"
                 >
-                  Batal
+                  Kembali
                 </button>
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"

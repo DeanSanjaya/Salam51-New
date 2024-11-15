@@ -24,7 +24,7 @@ const DatePicker = ({ tanggal, setTanggal }) => {
         className="mb-3 block text-sm font-medium text-black dark:text-white"
         htmlFor="tanggal"
       >
-        Tanggal Barang
+        Tanggal Barang Masuk
       </label>
       <div className="relative">
         <input

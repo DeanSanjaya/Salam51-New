@@ -26,17 +26,14 @@ const TambahUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!username) {
       sweetAlert('Username tidak boleh kosong', 'error');
       return;
     }
-
     if (!password) {
       sweetAlert('Password tidak boleh kosong', 'error');
       return;
     }
-
     try {
       const response = await axios.post('http://localhost:5000/addUser', {
         username,
@@ -45,15 +42,10 @@ const TambahUser = () => {
       });
       if (response.status === 201) {
         sweetAlert('User berhasil ditambahkan', 'success');
-      } else if (response.message === 'Username sudah terpakai') {
-        sweetAlert('Username sudah terpakai', 'error');
-      } else {
-        sweetAlert('Gagal menambahkan user: ' + response.data.message, 'error');
       }
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || error.message || 'Terjadi kesalahan';
-
       if (error.response && error.response.status === 400) {
         if (errorMessage === 'Username sudah terpakai') {
           sweetAlert('Username sudah terpakai', 'error');
@@ -113,6 +105,7 @@ const TambahUser = () => {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    autoComplete="off"
                   />
                 </div>
               </div>
@@ -200,7 +193,7 @@ const TambahUser = () => {
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                   type="button"
                 >
-                  Batal
+                  Kembali
                 </button>
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
