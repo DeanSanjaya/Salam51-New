@@ -6,9 +6,11 @@ import { calculateROP } from '../../utils/ropFunction';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
+import DynamicFields from '../../components/DynamicField';
 
 const InputBarang = () => {
   const [nama, setNama] = useState('');
+  const [merk, setMerk] = useState('');
   const [jumlah, setJumlah] = useState('');
   const [tanggal, setTanggal] = useState('');
   const [leadTime, setLeadTime] = useState('');
@@ -17,6 +19,7 @@ const InputBarang = () => {
   const [rerata, setRerata] = useState('');
   const [safetyStock, setSafetyStock] = useState('');
   const [tempat, setTempat] = useState('');
+  const [attributes, setAttributes] = useState([]);
   const username = sessionStorage.getItem('username');
 
   const sweetAlert = (title, icon) => {
@@ -32,6 +35,7 @@ const InputBarang = () => {
     e.preventDefault();
     if (
       nama &&
+      merk &&
       jumlah &&
       tanggal &&
       leadTime &&
@@ -42,9 +46,16 @@ const InputBarang = () => {
       tempat
     ) {
       const ROP = calculateROP(leadTime, satuanWaktu, rerata, safetyStock);
+      const formattedAttributes = attributes.reduce((acc, attr) => {
+        if (attr.label && attr.value) {
+          acc[attr.label] = attr.value;
+        }
+        return acc;
+      }, {});
       await axios
         .post('http://localhost:5000/items', {
           nama,
+          merk,
           detail: [
             {
               jumlah,
@@ -59,6 +70,7 @@ const InputBarang = () => {
           satuanWaktu,
           totalJumlah: jumlah,
           ROP,
+          attributes: formattedAttributes,
         })
         .catch((err) => console.log(err));
       await axios
@@ -79,6 +91,7 @@ const InputBarang = () => {
 
   const handleReset = () => {
     setNama('');
+    setMerk('');
     setJumlah('');
     setTanggal('');
     setLeadTime('');
@@ -87,6 +100,7 @@ const InputBarang = () => {
     setSatuanBarang('');
     setSatuanWaktu('');
     setTempat('');
+    setAttributes([]);
   };
 
   return (
@@ -188,7 +202,25 @@ const InputBarang = () => {
                   </div>
                 </div>
                 {/* Kolom 2 */}
+
                 <div>
+                  <div className="mb-4.5">
+                    <label
+                      className="mb-2.5 block text-black dark:text-white"
+                      htmlFor="merk"
+                    >
+                      Merk Barang
+                    </label>
+                    <input
+                      autoComplete="off"
+                      id="merk"
+                      type="text"
+                      placeholder="Masukkan merk barang"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      onChange={(e) => setMerk(e.target.value)}
+                      value={merk}
+                    />
+                  </div>
                   <div className="mb-4.5">
                     <DatePicker tanggal={tanggal} setTanggal={setTanggal} />
                   </div>
@@ -202,7 +234,7 @@ const InputBarang = () => {
                     <input
                       autoComplete="off"
                       id="satuan"
-                      type="string"
+                      type="text"
                       placeholder="Masukkan satuan barang"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       onChange={(e) => setSatuanBarang(e.target.value)}
@@ -231,6 +263,10 @@ const InputBarang = () => {
                   </div>
                 </div>
               </div>
+              <DynamicFields
+                attributes={attributes}
+                setAttributes={setAttributes}
+              />
               <div className="flex justify-between gap-4.5">
                 <button
                   type="button"

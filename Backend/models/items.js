@@ -1,22 +1,27 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const itemsSchema = new mongoose.Schema({
-	nama: String,
-	detail: [
-		{
-			jumlah: Number,
-			tanggal: Date,
-			tempat: String,
-		},
-	],
-	totalJumlah: Number,
-	leadTime: Number,
-	rerata: Number,
-	safetyStock: Number,
-	ROP: Number,
-	satuanWaktu: String,
-	satuanBarang: String,
+const detailSchema = new Schema({
+	jumlah: { type: Number },
+	tanggal: { type: Date },
+	tempat: { type: String },
 });
 
-const itemsModel = mongoose.model("items", itemsSchema);
-module.exports = itemsModel;
+const itemsSchema = new Schema({
+	nama: { type: String },
+	merk: { type: String },
+	detail: [detailSchema],
+	attributes: {
+		type: Map,
+		of: String,
+	},
+	leadTime: { type: Number },
+	rerata: { type: Number },
+	safetyStock: { type: Number },
+	satuanBarang: { type: String },
+	satuanWaktu: { type: String },
+	totalJumlah: { type: Number },
+	ROP: { type: Number },
+});
+
+module.exports = mongoose.model("items", itemsSchema);

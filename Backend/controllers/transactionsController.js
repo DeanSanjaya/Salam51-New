@@ -1,8 +1,8 @@
-const transaksiModel = require("../models/transaksi");
+const transactionModel = require("../models/transactions");
 
 const createTransaksi = async (req, res) => {
 	try {
-		const transaksi = await transaksiModel.create(req.body);
+		const transaksi = await transactionModel.create(req.body);
 		res.status(201).json(transaksi);
 	} catch (err) {
 		res.status(400).json(err);
@@ -10,7 +10,7 @@ const createTransaksi = async (req, res) => {
 };
 
 const getTransaksi = (req, res) => {
-	transaksiModel
+	transactionModel
 		.find()
 		.then((transaksi) => res.json(transaksi))
 		.catch((err) => res.json(err));
@@ -18,7 +18,7 @@ const getTransaksi = (req, res) => {
 
 const getTransaksiCount = async (req, res) => {
 	try {
-		const count = await transaksiModel.countDocuments({});
+		const count = await transactionModel.countDocuments({});
 		res.status(200).json({ count });
 	} catch (error) {
 		console.error("error getting count: ", error);

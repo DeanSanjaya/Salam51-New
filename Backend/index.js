@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const itemsRoutes = require("./routes/itemsRoutes");
 const usersRoutes = require("./routes/usersRoutes");
-const transaksiRoutes = require("./routes/transaksiRoutes");
+const transactionsRoutes = require("./routes/transactionsRoutes");
 require("dotenv").config();
 const { MONGO_URL, PORT } = process.env;
 
@@ -18,7 +18,7 @@ mongoose
 
 app.use("/items", itemsRoutes);
 app.use("/", usersRoutes);
-app.use("/transaksi", transaksiRoutes);
+app.use("/transaksi", transactionsRoutes);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`);
