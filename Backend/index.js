@@ -4,6 +4,7 @@ const cors = require("cors");
 const itemsRoutes = require("./routes/itemsRoutes");
 const usersRoutes = require("./routes/usersRoutes");
 const transactionsRoutes = require("./routes/transactionsRoutes");
+const updateRerataCronJob = require("./controllers/cronController");
 require("dotenv").config();
 const { MONGO_URL, PORT } = process.env;
 
@@ -19,6 +20,7 @@ mongoose
 app.use("/items", itemsRoutes);
 app.use("/", usersRoutes);
 app.use("/transaksi", transactionsRoutes);
+updateRerataCronJob.start();
 
 app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`);

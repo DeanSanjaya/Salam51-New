@@ -58,10 +58,15 @@ const DetailBarang = () => {
 
       await axios.post('http://localhost:5000/transaksi/tambah', {
         namaBarang: item.nama,
-        jenisTransaksi: 'Penghapusan',
-        jumlah: jumlahDihapus,
-        tanggalTransaksi: today,
-        username,
+        idBarang: item._id,
+        transaksi: [
+          {
+            username,
+            jenisTransaksi: 'Penghapusan',
+            tanggalTransaksi: today,
+            jumlah: jumlahDihapus,
+          },
+        ],
       });
     } catch (err) {
       console.error('Error deleting detail:', err);

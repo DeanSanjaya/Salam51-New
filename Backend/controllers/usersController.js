@@ -19,13 +19,6 @@ const login = async (req, res) => {
 
 		// Jika login berhasil
 		return res.json({ user });
-
-		// Jika ingin menambahkan pemeriksaan role
-		// if (user.role === "admin") {
-		//     return res.json({ message: "login admin" });
-		// } else if (user.role === "user") {
-		//     return res.json({ message: "login user" });
-		// }
 	} catch (err) {
 		// Jika terjadi kesalahan
 		console.error("Error saat login:", err);

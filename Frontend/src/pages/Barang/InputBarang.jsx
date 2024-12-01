@@ -7,6 +7,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
 import DynamicFields from '../../components/DynamicField';
+import SelectGroupThree from '../../components/Forms/SelectGroup/SelectGroupThree';
 
 const InputBarang = () => {
   const [nama, setNama] = useState('');
@@ -20,7 +21,12 @@ const InputBarang = () => {
   const [safetyStock, setSafetyStock] = useState('');
   const [tempat, setTempat] = useState('');
   const [attributes, setAttributes] = useState([]);
+  const [isOther, setIsOther] = useState(false);
   const username = sessionStorage.getItem('username');
+
+  const handleSelectOther = (isSelected) => {
+    setIsOther(isSelected);
+  };
 
   const sweetAlert = (title, icon) => {
     Swal.fire({
@@ -45,15 +51,20 @@ const InputBarang = () => {
       satuanBarang &&
       tempat
     ) {
+      // Menghitung ROP
       const ROP = calculateROP(leadTime, satuanWaktu, rerata, safetyStock);
+
+      // Memformat atribut jika ada
       const formattedAttributes = attributes.reduce((acc, attr) => {
         if (attr.label && attr.value) {
           acc[attr.label] = attr.value;
         }
         return acc;
       }, {});
-      await axios
-        .post('http://localhost:5000/items', {
+
+      try {
+        // 1. Simpan barang ke itemsModel dan ambil idBarang yang baru dibuat
+        const itemResponse = await axios.post('http://localhost:5000/items', {
           nama,
           merk,
           detail: [
@@ -71,19 +82,30 @@ const InputBarang = () => {
           totalJumlah: jumlah,
           ROP,
           attributes: formattedAttributes,
-        })
-        .catch((err) => console.log(err));
-      await axios
-        .post('http://localhost:5000/transaksi/tambah', {
+        });
+
+        const idBarang = itemResponse.data._id;
+
+        // 2. Simpan transaksi ke transactionModel dengan idBarang
+        await axios.post('http://localhost:5000/transaksi/tambah', {
           namaBarang: nama,
-          jenisTransaksi: 'Penambahan',
-          jumlah,
-          tanggalTransaksi: tanggal,
-          username,
-        })
-        .catch((err) => console.log(err));
-      handleReset();
-      sweetAlert('Input berhasil', 'success');
+          idBarang,
+          transaksi: [
+            {
+              username,
+              jenisTransaksi: 'Penambahan',
+              tanggalTransaksi: tanggal,
+              jumlah,
+            },
+          ],
+        });
+
+        handleReset();
+        sweetAlert('Input berhasil', 'success');
+      } catch (err) {
+        console.log(err);
+        sweetAlert('Terjadi kesalahan', 'error');
+      }
     } else {
       sweetAlert('Input Belum lengkap', 'error');
     }
@@ -129,7 +151,7 @@ const InputBarang = () => {
                       autoComplete="off"
                       id="namaBarang"
                       type="text"
-                      placeholder="Masukkan nama barang"
+                      placeholder="Contoh: Paku, Kayu, Semen, dll"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       onChange={(e) => setNama(e.target.value)}
                       value={nama}
@@ -161,7 +183,7 @@ const InputBarang = () => {
                     <input
                       id="waktu-antar"
                       type="number"
-                      placeholder="Masukkan lama waktu pengantaran"
+                      placeholder="Masukkan waktu pengantaran barang"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       onChange={(e) => setLeadTime(e.target.value)}
                       value={leadTime}
@@ -172,7 +194,7 @@ const InputBarang = () => {
                       className="mb-2.5 block text-black dark:text-white"
                       htmlFor="rerata"
                     >
-                      Rata-rata Penjualan Perharinya
+                      Asumsi Rata-Rata Penjualan Perharinya
                     </label>
                     <input
                       id="rerata"
@@ -209,13 +231,13 @@ const InputBarang = () => {
                       className="mb-2.5 block text-black dark:text-white"
                       htmlFor="merk"
                     >
-                      Merk Barang
+                      Merk barang
                     </label>
                     <input
                       autoComplete="off"
                       id="merk"
                       type="text"
-                      placeholder="Masukkan merk barang"
+                      placeholder="Contoh: Dulux, Nippon, dan lain-lain"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       onChange={(e) => setMerk(e.target.value)}
                       value={merk}
@@ -224,23 +246,13 @@ const InputBarang = () => {
                   <div className="mb-4.5">
                     <DatePicker tanggal={tanggal} setTanggal={setTanggal} />
                   </div>
-                  <div className="mb-4.5">
-                    <label
-                      className="mb-2.5 block text-black dark:text-white"
-                      htmlFor="satuan"
-                    >
-                      Satuan Barang
-                    </label>
-                    <input
-                      autoComplete="off"
-                      id="satuan"
-                      type="text"
-                      placeholder="Masukkan satuan barang"
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      onChange={(e) => setSatuanBarang(e.target.value)}
-                      value={satuanBarang}
-                    />
-                  </div>
+
+                  <SelectGroupThree
+                    satuanBarang={satuanBarang}
+                    setSatuanBarang={setSatuanBarang}
+                    onSelectOther={handleSelectOther}
+                  />
+
                   <SelectGroupOne
                     satuanWaktu={satuanWaktu}
                     setSatuanWaktu={setSatuanWaktu}

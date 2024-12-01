@@ -20,7 +20,7 @@ const DynamicFields = ({ attributes, setAttributes }) => {
     <div>
       <div className="flex gap-3 mb-5">
         <h4 className="text-black dark:text-white">
-          Atribut Tambahan ( jika ada ){' '}
+          Atribut Tambahan ( jika ada )
         </h4>
         <button
           type="button"
@@ -36,15 +36,16 @@ const DynamicFields = ({ attributes, setAttributes }) => {
           <div key={index} className="flex gap-2 w-[calc(50%-0.5rem)]">
             <input
               type="text"
-              placeholder="Label"
-              className="w-2/5 rounded border-[1.5px] border-stroke py-2 px-3 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white"
+              placeholder="Contoh: Dimensi, Volume, dan lain-lain"
+              className="w-3/5 rounded border-[1.5px] border-stroke py-2 px-3 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white"
               value={attr.label}
               onChange={(e) => handleChange(index, 'label', e.target.value)}
             />
+
             <input
               type="text"
               placeholder="Value"
-              className="w-2/5 rounded border-[1.5px] border-stroke py-2 px-3 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white"
+              className="w-1/5 rounded border-[1.5px] border-stroke py-2 px-3 text-black dark:border-form-strokedark dark:bg-form-input dark:text-white"
               value={attr.value}
               onChange={(e) => handleChange(index, 'value', e.target.value)}
             />

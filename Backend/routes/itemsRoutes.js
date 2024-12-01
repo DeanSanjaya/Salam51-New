@@ -5,7 +5,7 @@ const itemsController = require("../controllers/itemsController");
 router.get("/", itemsController.getItems);
 router.get("/total", itemsController.getTotalItems);
 router.get("/count", itemsController.getCollection);
-router.get("/totalJumlah", itemsController.getTotalJumlahItemsEachItem)
+router.get("/totalJumlah", itemsController.getTotalJumlahItemsEachItem);
 router.get("/:id", itemsController.getItemById);
 
 router.put("/:id/detail", itemsController.outItem);

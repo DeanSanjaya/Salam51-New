@@ -10,11 +10,13 @@ const KeluarBarang = () => {
   const [items, setItems] = useState([]);
   const [jumlah, setJumlah] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOptionId, setSelectedOptionId] = useState('');
+  const [merk, setMerk] = useState('');
   const [totalStok, setTotalStok] = useState('');
   const [detailPengambilan, setDetailPengambilan] = useState([]);
-  const navigate = useNavigate();
   const today = new Date();
   const username = sessionStorage.getItem('username');
+  const navigate = useNavigate();
 
   const sweetAlert = (title, icon) => {
     Swal.fire({
@@ -36,12 +38,15 @@ const KeluarBarang = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  const handleSelectChange = (value) => {
-    setSelectedOption(value);
-    const selectedItem = items.find((item) => item.nama === value);
+  const handleSelectChange = (id) => {
+    setSelectedOption(id);
+    const selectedItem = items.find((item) => item._id === id);
     if (selectedItem) {
+      setMerk(selectedItem.merk);
       setTotalStok(selectedItem.totalJumlah);
+      setSelectedOptionId(selectedItem._id);
     } else {
+      setMerk('');
       setTotalStok(0);
     }
   };
@@ -50,7 +55,7 @@ const KeluarBarang = () => {
     e.preventDefault();
 
     const jumlahKeluar = parseInt(jumlah, 10);
-    const selectedItem = items.find((item) => item.nama === selectedOption);
+    const selectedItem = items.find((item) => item._id === selectedOption);
 
     if (!totalStok) {
       sweetAlert('Pilih barang yang ingin dikeluarkan', 'error');
@@ -68,13 +73,11 @@ const KeluarBarang = () => {
     }
 
     try {
+      //tambah barang ke items
       const response = await axios.put(
         `http://localhost:5000/items/${selectedItem._id}/detail`,
-        {
-          jumlahKeluar,
-        },
+        { jumlahKeluar },
       );
-      // Cek status respons
       if (response.status === 200) {
         const detailPengambilanBaru = response.data.detailYangDigunakan;
         setDetailPengambilan(detailPengambilanBaru);
@@ -88,7 +91,7 @@ const KeluarBarang = () => {
           .join(', dan ');
 
         sweetAlert(
-          `${selectedOption} sebanyak ${jumlahKeluar} ${selectedItem.satuanBarang} berhasil keluar, dengan rincian:
+          `${selectedItem.nama} ${selectedItem.merk} sebanyak ${jumlahKeluar} ${selectedItem.satuanBarang} berhasil keluar, dengan rincian:
           ${detailPesan}.`,
           'success',
         );
@@ -102,12 +105,18 @@ const KeluarBarang = () => {
         });
         setItems(updatedItems); // Update state dengan item yang diperbarui
       }
+      //tambah transaksi
       await axios.post('http://localhost:5000/transaksi/tambah', {
         namaBarang: selectedOption,
-        jenisTransaksi: 'Pengeluaran',
-        jumlah,
-        tanggalTransaksi: today,
-        username,
+        idBarang: selectedOptionId,
+        transaksi: [
+          {
+            username,
+            jenisTransaksi: 'Pengeluaran',
+            tanggalTransaksi: today,
+            jumlah,
+          },
+        ],
       });
     } catch (error) {
       console.error('Error updating database:', error);
@@ -134,6 +143,22 @@ const KeluarBarang = () => {
               />
               <div className="mb-4.5">
                 <label
+                  htmlFor="merk"
+                  className="mb-2.5 block text-black dark:text-white"
+                >
+                  Merk
+                </label>
+                <input
+                  placeholder="Merk Barang"
+                  id="merk"
+                  type="text"
+                  value={merk}
+                  readOnly
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+              <div className="mb-4.5">
+                <label
                   htmlFor="stok"
                   className="mb-2.5 block text-black dark:text-white"
                 >
@@ -144,15 +169,19 @@ const KeluarBarang = () => {
                   id="stok"
                   type="number"
                   value={totalStok}
-                  readOnly
+                  disabled
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
               <div className="mb-4.5">
-                <label className="mb-2.5 block text-black dark:text-white">
+                <label
+                  htmlFor="jumlah"
+                  className="mb-2.5 block text-black dark:text-white"
+                >
                   Jumlah barang
                 </label>
                 <input
+                  id="jumlah"
                   type="number"
                   placeholder="Masukkan jumlah barang"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"

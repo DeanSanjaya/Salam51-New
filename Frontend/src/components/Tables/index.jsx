@@ -57,8 +57,8 @@ const Tabel = ({ items, setItems }) => {
     });
   };
 
-  const handleEdit = (_id) => {
-    navigate(`/barang/edit-barang/${_id}`);
+  const handleInformasi = (_id) => {
+    navigate(`/barang/informasi-barang/${_id}`);
   };
 
   const handleDelete = async (_id) => {
@@ -83,10 +83,14 @@ const Tabel = ({ items, setItems }) => {
         swalAlert('Item berhasil dihapus', 'success');
         await axios.post('http://localhost:5000/transaksi/tambah', {
           namaBarang: itemToDelete.nama,
-          jenisTransaksi: 'Penghapusan',
-          jumlah: itemToDelete.totalJumlah,
-          tanggalTransaksi: today,
-          username,
+          transaksi: [
+            {
+              username,
+              jenisTransaksi: 'Penghapusan',
+              tanggalTransaksi: today,
+              jumlah: itemToDelete.totalJumlah,
+            },
+          ],
         });
       }
     } catch (error) {
@@ -120,6 +124,9 @@ const Tabel = ({ items, setItems }) => {
                 className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11 cursor-pointer "
               >
                 Nama Barang
+              </th>
+              <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11  ">
+                Merk
               </th>
               <th
                 onClick={() => requestSort('jumlah')}
@@ -163,6 +170,11 @@ const Tabel = ({ items, setItems }) => {
                       {item.nama}
                     </h5>
                   </td>
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h5 className="text-black dark:text-white text-center">
+                      {item.merk}
+                    </h5>
+                  </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark text-center">
                     <h5 className="text-black dark:text-white">
                       {item.totalJumlah}
@@ -178,22 +190,39 @@ const Tabel = ({ items, setItems }) => {
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex justify-center items-center space-x-3.5">
-                      {/* Tombol edit */}
-                      {/* <button
-                        onClick={() => handleEdit(item._id)}
+                      {/* Tombol info */}
+                      <button
+                        onClick={() => handleInformasi(item._id)}
                         className="hover:text-primary"
                       >
                         <svg
                           className="fill-current"
                           xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
+                          width="20"
+                          height="20"
                           viewBox="0 0 24 24"
                           fill="none"
                         >
-                          <polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon>
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            fill="none"
+                          />
+
+                          <circle cx="12" cy="8" r="1" fill="currentColor" />
+
+                          <rect
+                            x="11.5"
+                            y="10"
+                            width="1"
+                            height="6"
+                            fill="currentColor"
+                          />
                         </svg>
-                      </button> */}
+                      </button>
                       {/* Tombol hapus */}
                       <button
                         onClick={() => handleDelete(item._id)}
@@ -201,8 +230,8 @@ const Tabel = ({ items, setItems }) => {
                       >
                         <svg
                           className="fill-current"
-                          width="18"
-                          height="18"
+                          width="20"
+                          height="20"
                           viewBox="0 0 18 18"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
@@ -220,8 +249,8 @@ const Tabel = ({ items, setItems }) => {
                       >
                         <svg
                           className="fill-current"
-                          width="18"
-                          height="18"
+                          width="20"
+                          height="20"
                           viewBox="0 0 18 18"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -236,8 +265,8 @@ const Tabel = ({ items, setItems }) => {
                         className="hover:text-primary"
                       >
                         <svg
-                          width="24"
-                          height="24"
+                          width="20"
+                          height="20"
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
                         >

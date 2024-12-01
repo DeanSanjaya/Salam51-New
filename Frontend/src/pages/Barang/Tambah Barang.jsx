@@ -55,10 +55,15 @@ const TambahBarang = () => {
         });
         await axios.post('http://localhost:5000/transaksi/tambah', {
           namaBarang: nama,
-          jenisTransaksi: 'Penambahan',
-          jumlah,
-          tanggalTransaksi: new Date(tanggal),
-          username,
+          idBarang: id,
+          transaksi: [
+            {
+              username,
+              jenisTransaksi: 'Penambahan',
+              tanggalTransaksi: new Date(tanggal),
+              jumlah,
+            },
+          ],
         });
         sweetAlert('Barang berhasil ditambahkan', 'success');
       } catch (err) {

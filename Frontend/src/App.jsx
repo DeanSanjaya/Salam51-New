@@ -5,14 +5,15 @@ import SignIn from './pages/Authentication/SignIn';
 import InputBarang from './pages/Barang/InputBarang';
 import ListBarang from './pages/Barang/ListBarang';
 import Settings from './pages/Settings';
-import EditBarang from './pages/Barang/EditBarang';
+import InformasiBarang from './pages/Barang/InformasiBarang';
 import KeluarBarang from './pages/Barang/KeluarBarang';
 import TambahBarang from './pages/Barang/Tambah Barang';
 import DetailBarang from './pages/Barang/DetailBarang';
 import DashboardUser from './pages/Dashboard/User';
 import DashboardAdmin from './pages/Dashboard/Admin';
 import TambahUser from './pages/TambahUser';
-import Laporan from './pages/Barang/Laporan';
+import Laporan from './pages/Laporan/Laporan';
+import LaporanDetail from './pages/Laporan/LaporanDetail';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -39,8 +40,9 @@ function App() {
         <Route path="/barang/tambah-barang/:id" element={<TambahBarang />} />
         <Route path="/barang/detail-barang/:id" element={<DetailBarang />} />
         <Route path="/barang/keluar-barang" element={<KeluarBarang />} />
-        <Route path="/barang/edit-barang/:id" element={<EditBarang />} />
+        <Route path="/barang/informasi-barang/:id" element={<InformasiBarang />}/>
         <Route path="/laporan" element={<Laporan />} />
+        <Route path="/laporan/:id" element={<LaporanDetail />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/tambah-user" element={<TambahUser />} />
       </Routes>

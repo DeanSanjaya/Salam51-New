@@ -22,7 +22,6 @@ const DashboardAdmin = () => {
         console.error('Error fetching item count:', error);
       }
     };
-
     fetchItemCount();
   }, []);
 
