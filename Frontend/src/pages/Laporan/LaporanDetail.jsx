@@ -41,9 +41,9 @@ const LaporanDetail = () => {
         pageName={`Laporan Transaksi ${transaksi?.namaBarang || ''}`}
       />
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        <div className="xl:flex xl:w-full  xl:flex-row gap-4">
+        <div className=" gap-4">
           {/* Tombol */}
-          <div className="flex xl:justify-normal justify-center flex-row xl:flex-col xl:w-2/12 gap-4">
+          <div className="flex  justify-center flex-row  gap-4 mb-4">
             <button
               className={`py-2 px-4 rounded text-white ${
                 activeTab === 'Penambahan' ? 'bg-blue-900' : 'bg-blue-500'
@@ -70,7 +70,7 @@ const LaporanDetail = () => {
             </button>
           </div>
           {/* Tabel */}
-          <div className="pt-5 overflow-x-auto w-full xl:w-10/12 xl:pt-0">
+          <div className="pt-5 overflow-x-auto w-full  xl:pt-0">
             <table className="w-full table-auto mb-4.5">
               <thead>
                 <tr className="bg-gray-2 text-center dark:bg-meta-4">

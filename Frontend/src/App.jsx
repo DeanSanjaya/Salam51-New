@@ -14,6 +14,7 @@ import DashboardAdmin from './pages/Dashboard/Admin';
 import TambahUser from './pages/TambahUser';
 import Laporan from './pages/Laporan/Laporan';
 import LaporanDetail from './pages/Laporan/LaporanDetail';
+import Petunjuk from './pages/petunjuk';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -45,6 +46,7 @@ function App() {
         <Route path="/laporan/:id" element={<LaporanDetail />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/tambah-user" element={<TambahUser />} />
+        <Route path="/petunjuk" element={<Petunjuk />} />
       </Routes>
     </>
   );

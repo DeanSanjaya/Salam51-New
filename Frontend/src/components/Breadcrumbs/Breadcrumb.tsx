@@ -13,7 +13,14 @@ const Breadcrumb = ({ pageName }: BreadcrumbProps) => {
       <nav>
         <ol className="flex items-center gap-2">
           <li>
-            <Link className="font-medium" to={`/home-${role}`}>
+            <Link
+              className="font-medium"
+              to={
+                role === 'user 1' || role === 'user 2'
+                  ? '/home-user'
+                  : `/home-${role}`
+              }
+            >
               Dashboard /
             </Link>
           </li>

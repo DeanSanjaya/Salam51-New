@@ -62,7 +62,7 @@ const KeluarBarang = () => {
       return;
     }
 
-    if (!jumlah) {
+    if (!jumlah || jumlah === '0') {
       sweetAlert(`Masukkan jumlah barang yang ingin dikeluarkan`, `error`);
       return;
     }
@@ -113,7 +113,7 @@ const KeluarBarang = () => {
           {
             username,
             jenisTransaksi: 'Pengeluaran',
-            tanggalTransaksi: today,
+            tanggalTransaksi: today.setHours(0, 0, 0, 0),
             jumlah,
           },
         ],

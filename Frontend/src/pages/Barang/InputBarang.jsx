@@ -42,11 +42,11 @@ const InputBarang = () => {
     if (
       nama &&
       merk &&
-      jumlah &&
+      jumlah != 0 &&
       tanggal &&
-      leadTime &&
-      rerata &&
-      safetyStock &&
+      leadTime != 0 &&
+      rerata != 0 &&
+      safetyStock != 0 &&
       satuanWaktu &&
       satuanBarang &&
       tempat
@@ -116,6 +116,7 @@ const InputBarang = () => {
     setMerk('');
     setJumlah('');
     setTanggal('');
+
     setLeadTime('');
     setRerata('');
     setSafetyStock('');

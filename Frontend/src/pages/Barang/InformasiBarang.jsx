@@ -10,6 +10,7 @@ const InformasiBarang = () => {
   const [merk, setMerk] = useState('');
   const [leadTime, setLeadTime] = useState('');
   const [satuanWaktu, setSatuanWaktu] = useState('');
+  const [satuanBarang, setSatuanBarang] = useState('');
   const [rerata, setRerata] = useState('');
   const [safetyStock, setSafetyStock] = useState('');
   const [attributes, setAttributes] = useState({});
@@ -22,6 +23,7 @@ const InformasiBarang = () => {
         setMerk(response.data.merk);
         setLeadTime(response.data.leadTime);
         setSatuanWaktu(response.data.satuanWaktu);
+        setSatuanBarang(response.data.satuanBarang);
         setRerata(response.data.rerata);
         setSafetyStock(response.data.safetyStock);
         setAttributes(response.data.attributes || {});
@@ -71,10 +73,10 @@ const InformasiBarang = () => {
                   <input
                     disabled
                     id="leadTime"
-                    type="number"
+                    type="text"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     onChange={(e) => setLeadTime(e.target.value)}
-                    value={leadTime}
+                    value={`${leadTime} ${satuanWaktu}`}
                   />
                 </div>
                 <div className="mb-4.5">
@@ -117,15 +119,15 @@ const InformasiBarang = () => {
                     className="mb-2.5 block text-black dark:text-white"
                     htmlFor="satuan-waktu"
                   >
-                    Satuan Waktu
+                    Satuan Barang
                   </label>
                   <input
                     disabled
-                    id="satuan-waktu"
+                    id="satuan-barang"
                     type="text"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    onChange={(e) => setSatuanWaktu(e.target.value)}
-                    value={satuanWaktu}
+                    onChange={(e) => setSatuanBarang(e.target.value)}
+                    value={satuanBarang}
                   />
                 </div>
 

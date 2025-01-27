@@ -45,14 +45,16 @@ const SignIn = () => {
         password,
       });
       const result = response.data;
-
-      if (result.user && result.user.role === 'user') {
+      if (
+        (result.user && result.user.role === 'user 1') ||
+        (result.user && result.user.role === 'user 2')
+      ) {
         alertTopEnd.fire({
           icon: 'success',
           title: 'Login berhasil',
         });
         sessionStorage.setItem('username', username);
-        sessionStorage.setItem('role', 'user');
+        sessionStorage.setItem('role', result.user.role);
         navigate('/home-user');
       } else if (result.user && result.user.role === 'admin') {
         alertTopEnd.fire({
@@ -60,7 +62,7 @@ const SignIn = () => {
           title: 'Login berhasil',
         });
         sessionStorage.setItem('username', username);
-        sessionStorage.setItem('role', 'admin');
+        sessionStorage.setItem('role', result.user.role);
         navigate('/home-admin');
       } else if (result.message === 'no username') {
         loginFailed('Username tidak terdaftar');

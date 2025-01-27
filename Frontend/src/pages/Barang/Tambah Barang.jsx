@@ -46,7 +46,7 @@ const TambahBarang = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (jumlah && tanggal && tempat) {
+    if (jumlah != 0 && tanggal && tempat) {
       try {
         await axios.post(`http://localhost:5000/items/${id}/detail/`, {
           jumlah,

@@ -19,10 +19,11 @@ const calculateROP = (leadTime, satuanWaktu, rerata, safetyStock) => {
 };
 
 const updateRerataCronJob = cron.schedule("0 16 * * 6", async () => {
-	// console.log("Cron job berjalan!");
+	console.log("Cron job berjalan!\n");
 	try {
-		// Ambil semua barang yang memiliki tanggal pertama kali masuk lebih dari 7 hari
+		// Ambil semua barang
 		const items = await itemsModel.find({});
+		console.log(`Jumlah barang ditemukan: ${items.length}\n`);
 
 		// Iterasi untuk setiap barang
 		for (let item of items) {
@@ -30,12 +31,38 @@ const updateRerataCronJob = cron.schedule("0 16 * * 6", async () => {
 			const tanggalMasuk = new Date(item.detail[0].tanggal);
 			const tanggalSekarang = new Date();
 
-			// Hitung selisih hari antara tanggal masuk dan sekarang
-			const selisihHari = Math.ceil((tanggalSekarang - tanggalMasuk) / (1000 * 60 * 60 * 24));
+			// Format tanggal ke dalam bentuk lokal
+			const formattedTanggalMasuk = tanggalMasuk.toLocaleDateString("id-ID");
+			const formattedTanggalSekarang = tanggalSekarang.toLocaleDateString("id-ID");
 
-			// Cek apakah barang sudah berada di sistem selama lebih dari 7 hari
+			console.log(`Barang: ${item.nama}`);
+			console.log(`Tanggal pertama masuk: ${formattedTanggalMasuk}`);
+			console.log(`Tanggal saat ini: ${formattedTanggalSekarang}`);
+
+			// Hitung selisih hari
+			const selisihHari = Math.ceil((tanggalSekarang - tanggalMasuk) / (1000 * 60 * 60 * 24));
+			console.log(`Selisih hari sejak masuk: ${selisihHari} hari\n`);
+
+			// Tampilkan semua tanggal pengeluaran barang beserta jumlahnya
+			const transaksiPengeluaran = await transactionModel.find({
+				namaBarang: item.nama,
+				"pengeluaran.tanggalTransaksi": { $exists: true },
+			});
+
+			if (transaksiPengeluaran.length > 0) {
+				console.log(`Barang ${item.nama} telah dikeluarkan pada:`);
+				transaksiPengeluaran.forEach((transaksi) => {
+					transaksi.pengeluaran.forEach((pengeluaran) => {
+						const tanggalPengeluaran = new Date(pengeluaran.tanggalTransaksi).toLocaleDateString("id-ID");
+						console.log(`- ${tanggalPengeluaran} = ${pengeluaran.jumlah}`);
+					});
+				});
+			} else {
+				console.log(`Barang ${item.nama} belum memiliki transaksi pengeluaran.\n`);
+			}
+
+			// Cek apakah barang sudah 7 hari atau lebih
 			if (selisihHari >= 6) {
-				// Ambil data pengeluaran selama 7 hari terakhir
 				const pengeluaranDalam7Hari = await transactionModel.aggregate([
 					{
 						$match: {
@@ -61,34 +88,23 @@ const updateRerataCronJob = cron.schedule("0 16 * * 6", async () => {
 					},
 				]);
 
-				// Jika ada pengeluaran dalam 7 hari terakhir, hitung rerata
 				if (pengeluaranDalam7Hari.length > 0) {
 					const totalPengeluaran = pengeluaranDalam7Hari[0].totalPengeluaran;
-
-					// Hitung rerata dengan membagi total pengeluaran dengan 7 (satu minggu)
 					const rerata = Math.ceil(totalPengeluaran / 6);
+					console.log(`Rerata penggunaan barang ${item.nama}: ${rerata}`);
 
-					// Update rerata dengan nilai yang baru (menggantikan rerata yang lama)
-					await itemsModel.updateOne(
-						{ _id: item._id },
-						{ $set: { rerata: rerata } } // Hanya menyimpan rerata terbaru
-					);
+					await itemsModel.updateOne({ _id: item._id }, { $set: { rerata: rerata } });
 
-					console.log(`Rerata untuk ${item.nama} telah diperbarui: ${rerata}`);
-
-					// Perhitungan ROP berdasarkan rerata, lead time, dan safety stock
-					
 					const rop = calculateROP(item.leadTime, item.satuanWaktu, rerata, item.safetyStock);
+					console.log(`ROP untuk barang ${item.nama}: ${rop}\n`);
 
-					// Update ROP setelah perhitungan
 					await itemsModel.updateOne({ _id: item._id }, { $set: { ROP: rop } });
-					console.log(`ROP untuk ${item.nama} telah diperbarui: ${rop}`);
 				} else {
 					await itemsModel.updateOne({ _id: item._id }, { $set: { rerata: 0, ROP: item.safetyStock } });
-					console.log(`Tidak ada pengeluaran dalam 7 hari untuk ${item.nama}, nilai rop adalah ${item.ROP}`);
+					console.log(`Tidak ada pengeluaran dalam 7 hari terakhir untuk ${item.nama}. Rerata diatur menjadi 0, ROP diatur menjadi ${item.safetyStock}\n`);
 				}
 			} else {
-				console.log(`${item.nama} belum berada di sistem selama 7 hari`);
+				console.log(`Barang ${item.nama} belum berada di sistem selama 7 hari.\n`);
 			}
 		}
 	} catch (error) {
