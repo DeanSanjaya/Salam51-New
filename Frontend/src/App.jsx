@@ -14,7 +14,7 @@ import DashboardAdmin from './pages/Dashboard/Admin';
 import TambahUser from './pages/TambahUser';
 import Laporan from './pages/Laporan/Laporan';
 import LaporanDetail from './pages/Laporan/LaporanDetail';
-import Petunjuk from './pages/petunjuk';
+import Petunjuk from './pages/Petunjuk';
 
 function App() {
   const [loading, setLoading] = useState(true);
